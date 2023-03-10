@@ -58,30 +58,22 @@ window.addEventListener('load', main());
 
 function main() {
     reloadId(ID);
-    result.disabled = true;
-    reset.disabled  = true;
     onClick(submit, async () => {
         if (checkForm()) {
             Espinete.spin(document.querySelector('form'));
-            submit.disabled = true;
             datos = [{}];
             datos.push({...form.forEach((el) => datos[el] = valor(el))});
             await updateSubsections();
-            result.disabled = false;
-            reset.disabled  = false;
+            Espinete.stop();
+            Espinete.spin(document.querySelector('form'));
+            if (datos.length>0) {
+                console.log(datos);
+                renderResults();
+            } else {
+                window.alert("No hay datos!");
+            };
             Espinete.stop();
         };
-    });
-    onClick(result, async () => {
-        Espinete.spin(document.querySelector('form'));
-        submit.disabled = true;
-        if (datos.length>0) {
-            console.log(datos);
-            renderResults();
-        } else {
-            window.alert("No hay datos!");
-        };
-        Espinete.stop();
     });
     onClick(reset, () => {
         window.location.reload();
