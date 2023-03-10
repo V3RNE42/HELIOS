@@ -179,7 +179,7 @@ function renderResults() {
         let hours2, minutes2, noonHour, noonMin, hours1, minutes1, day, month, year;
         /* Ajuste a los husos horarios locales */
         if (!local) {
-            let originalOffset = secciones[i].sunriseOffset;
+            let originalOffset = secciones[0].sunriseOffset;
             el.sunset = (el.sunset != null) ? new Date(el.sunset.getTime() + (el.sunsetOffset.valueOf() - originalOffset) * ONE_HOUR) : null;
             el.sunrise = (el.sunrise != null) ? new Date(el.sunrise.getTime() + (el.sunriseOffset.valueOf() - originalOffset) * ONE_HOUR) : null;
             el.noon = (el.noon != null) ? new Date(el.noon.getTime() + (el.noonOffset.valueOf() - originalOffset) * ONE_HOUR) : null;
