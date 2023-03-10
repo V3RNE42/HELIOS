@@ -180,9 +180,9 @@ function renderResults() {
         /* Ajuste a los husos horarios locales */
         if (!local) {
             let originalOffset = secciones[0].sunriseOffset;
-            el.sunset = (el.sunset != null) ? new Date(el.sunset.getTime() + (el.sunsetOffset.valueOf() - originalOffset) * ONE_HOUR) : null;
-            el.sunrise = (el.sunrise != null) ? new Date(el.sunrise.getTime() + (el.sunriseOffset.valueOf() - originalOffset) * ONE_HOUR) : null;
-            el.noon = (el.noon != null) ? new Date(el.noon.getTime() + (el.noonOffset.valueOf() - originalOffset) * ONE_HOUR) : null;
+            el.sunset = (el.sunset != null && el.sunsetOffset != originalOffset) ? new Date(el.sunset.getTime() + (el.sunsetOffset.valueOf() - originalOffset) * ONE_HOUR) : null;
+            el.sunrise = (el.sunrise != null && el.sunriseOsunsetOffset != originalOffset) ? new Date(el.sunrise.getTime() + (el.sunriseOffset.valueOf() - originalOffset) * ONE_HOUR) : null;
+            el.noon = (el.noon != null && el.noonOsunsetOffset != originalOffset) ? new Date(el.noon.getTime() + (el.noonOffset.valueOf() - originalOffset) * ONE_HOUR) : null;
         };
 
         hours2 = null != el.sunset ? el.sunset.getHours() : el.noon?.getHours(),
