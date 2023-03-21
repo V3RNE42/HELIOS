@@ -158,14 +158,15 @@ function renderResults() {
     let someInfo = document.createElement('div');
     someInfo.innerHTML =
         `<b>Salida:</b>  ${datos["diasalida"]} <br>
-                     <b>Llegada:</b> ${datos["diallegada"]} <br>
-                     <b>Origen:</b>  ${datos["origen"]} , ${datos["paisOrigen"]}<br>
-                     <b>Destino:</b> ${datos["destino"]}, ${datos["paisDestino"]} <br>`;
+        <b>Llegada:</b>  ${datos["diallegada"]} <br>
+        <b>Origen:</b>   ${datos["origen"]} , ${datos["paisOrigen"]}<br>
+        <b>Destino:</b>  ${datos["destino"]}, ${datos["paisDestino"]} <br>`;
     document.querySelector('header').appendChild(someInfo);
 
     /** Analiza la propiedad AnteMeridiana y devuelve
      *  izquierda (true), o derecha (false)
-     *  @param {Boolean} ams 
+     *  @param {Boolean} ams True-Antes | False-Despues
+     *  @param {Boolean} NaS True-NorteASur | False-SurANorte
      *  @returns {Boolean} True-Izquierda | False-Derecha*/
     let getLeftSeat = (ams, NaS) => {
         let leftSeat = true;
@@ -209,10 +210,10 @@ function renderResults() {
                 /* Es posible cambiar de asiento */
                 let sameTime = !(hours1 == noonHour && minutes1 == noonMin);
                 if (sameTime) {
-                    texto += `Siéntate en el lado ${getLeftSeat(true, secciones.NaS) ? "izquierdo" : "derecho"} del vehículo de ${adapt(hours1) + ":" + adapt(minutes1)} ` +
+                    texto += `Siéntate en el lado ${getLeftSeat(true, secciones.NaS) ? "<b>izquierdo</b>" : "<b>derecho</b>"} del vehículo de ${adapt(hours1) + ":" + adapt(minutes1)} ` +
                         `a ${adapt(noonHour) + ":" + adapt(noonMin)}, y luego`;
                 };
-                texto += `\t  ${sameTime ? 's' : 'S'}iéntate al lado ${getLeftSeat(false, secciones.NaS) ? "izquierdo" : "derecho"} del vehículo `;
+                texto += `\t  ${sameTime ? 's' : 'S'}iéntate al lado ${getLeftSeat(false, secciones.NaS) ? "<b>izquierdo</b>" : "<b>derecho</b>"} del vehículo `;
                 texto += sameTime
                     ? `de ${adapt(noonHour) + ":" + adapt(noonMin)} a ${adapt(hours2) + ":" + adapt(minutes2)} `
                     : `durante todo el trayecto  `;
@@ -222,20 +223,20 @@ function renderResults() {
                     let morning = el["noon"].getTime() - el["sunrise"].getTime(),
                         afternoon = el["sunset"].getTime() - el["noon"].getTime();
                     leftSeat = getLeftSeat(morning >= afternoon, secciones.NaS);
-                    texto += `Siéntate en el lado ${leftSeat ? "izquierdo" : "derecho"} del vehículo de ${adapt(hours1) + ":" + adapt(minutes1)} ` +
+                    texto += `Siéntate en el lado ${leftSeat ? "<b>izquierdo</b>" : "<b>derecho</b>"} del vehículo de ${adapt(hours1) + ":" + adapt(minutes1)} ` +
                         `a ${adapt(hours2) + ":" + adapt(minutes2)}  `;
                 } else if (el["sunrise"] == null) {
-                    texto += `Siéntate en el lado ${getLeftSeat(false, secciones.NaS) ? "izquierdo" : "derecho"} del vehículo de ${adapt(hours1) + ":" + adapt(minutes1)} ` +
+                    texto += `Siéntate en el lado ${getLeftSeat(false, secciones.NaS) ? "<b>izquierdo</b>" : "<b>derecho</b>"} del vehículo de ${adapt(hours1) + ":" + adapt(minutes1)} ` +
                         `a ${adapt(hours2) + ":" + adapt(minutes2)}  `;
                 } else if (el["sunset"] == null) {
-                    texto += `Siéntate en el lado ${getLeftSeat(true, secciones.NaS) ? "izquierdo" : "derecho"} del vehículo de ${adapt(hours1) + ":" + adapt(minutes1)} ` +
+                    texto += `Siéntate en el lado ${getLeftSeat(true, secciones.NaS) ? "<b>izquierdo</b>" : "<b>derecho</b>"} del vehículo de ${adapt(hours1) + ":" + adapt(minutes1)} ` +
                         `a ${adapt(hours2) + ":" + adapt(minutes2)} `;
                 };
             };
         } else {
             /* No es necesario cambiarse: todo el trayecto courre ANTES o DESPUÉS del Mediodia Solar */
             leftSeat = getLeftSeat(el["AM"], secciones.NaS);
-            texto += `Siéntate en el lado ${leftSeat ? "izquierdo" : "derecho"} del vehículo durante todo el trayecto `;
+            texto += `Siéntate en el lado ${leftSeat ? "<b>izquierdo</b>" : "<b>derecho</b>"} del vehículo durante todo el trayecto `;
         };
         if (!el.night) texto += `${sun ? '☀️' : '⛅'}`;
 
