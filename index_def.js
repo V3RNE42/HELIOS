@@ -344,6 +344,7 @@ async function sectionFormatter() {
                     event: eventos[j],
                     date: propiedades[j][eventos[j]],
                     coords: getNewCoords(datos["start"], datos["end"], (j > 0 ? 1 : 0)),
+                    /* Esto de los offsets hay que minimizarlo - hace que TODO TARDE DEMASIADO */
                     offset: await getOffset(j > 0 ? datos["end"] : datos["start"]),
                     rate: j > 0 ? 1 : 0,
                 };
@@ -396,7 +397,7 @@ async function sectionFormatter() {
  * y marca sus coordenadas, su hora, el tipo de evento (amanecer o anochecer) y la 
  * tasa de avance respecto al trayecto total.   */
 async function updateSingleSections() {
-    let { start, diasalida, diallegada } = datos;
+    let { start, diasalida, diallegada, local } = datos;
     let datePointer = diasalida;
     let diff = ONE_HOUR;
     let time = new Date(new Date().getTime() - ONE_DAY), tiempo = new Date();
@@ -451,7 +452,7 @@ async function updateSingleSections() {
                 event: seekSunset ? "sunset" : "sunrise",
                 date: datePointer,
                 coords: coordPoint,
-                offset: await getOffset(coordPoint),
+                offset: !local ? await getOffset(coordPoint) : null,
                 rate: RATE
             });
             diff = ONE_HOUR;
