@@ -191,9 +191,9 @@ function renderResults() {
         noonMin = el.noon?.getMinutes(),
         hours1 = (null != el.sunrise) ? el.sunrise.getHours() : el.noon?.getHours(),
         minutes1 = (null != el.sunrise) ? el.sunrise.getMinutes() : el.noon?.getMinutes(),
-        day = el.noon?.getDate().toString(),
-        month = el.noon?.getMonth(),
-        year = el.noon?.getFullYear();
+        day = el.sunrise?.getDate().toString(),
+        month = el.sunrise?.getMonth(),
+        year = el.sunrise?.getFullYear();
 
         let adapt = (num) => num >= 9 ? num.toString() : "0" + num.toString();
 
