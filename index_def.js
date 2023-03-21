@@ -383,7 +383,8 @@ async function sectionFormatter() {
             };
         };
         subSection = formatted;
-        console.log("Subsecciones formateadas: \n"+subSection);
+        console.log("Subsecciones formateadas: \n");
+        console.log(subSection);
     } catch (error) {
         console.log(error);
     }
