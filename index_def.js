@@ -281,11 +281,11 @@ function sectionAdapter() {
                 if (j == 0) {
                     sunrise = sunrise.getTime() > diasalida.getTime() ? sunrise : diasalida;
                     noon = noon?.getTime() > diasalida.getTime() ? noon : diasalida;
-                    (noon == diasalida) ? subSection[indices[j]]["AM"] = false : null;
+                    (noon == diasalida) ?   AM = false : null;
                 } else {
                     sunset = sunset.getTime() < diallegada.getTime() ? sunset : diallegada;
                     noon = noon?.getTime() < diallegada.getTime() ? noon : diallegada;
-                    (noon == diallegada) ? subSection[indices[j]]["AM"] = true : null;
+                    (noon == diallegada) ?  AM = true : null;
                 };
             } else {
                 sunrise = sunrise.getTime() > diasalida.getTime() ? sunrise : diasalida;
