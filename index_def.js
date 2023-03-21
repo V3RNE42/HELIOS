@@ -317,6 +317,8 @@ function sectionAdapter() {
         };
         subSection[indices[j]] = cosa[indices[j]];
     };
+    console.log("Secciones adaptadas");
+    console.log(subSection);
 };
 
 /** Formatea las secciones para que sean entidades separadas, cada una con su
