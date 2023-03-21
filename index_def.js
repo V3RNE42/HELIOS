@@ -281,19 +281,17 @@ function sectionAdapter() {
                 if (j == 0) {
                     sunrise = sunrise.getTime() > diasalida.getTime() ? sunrise : diasalida;
                     noon = noon?.getTime() > diasalida.getTime() ? noon : diasalida;
-                    (noon == diasalida) ?   AM = false : null;
                 } else {
                     sunset = sunset.getTime() < diallegada.getTime() ? sunset : diallegada;
                     noon = noon?.getTime() < diallegada.getTime() ? noon : diallegada;
-                    (noon == diallegada) ?  AM = true : null;
                 };
             } else {
                 sunrise = sunrise.getTime() > diasalida.getTime() ? sunrise : diasalida;
                 sunset = sunset.getTime() < diallegada.getTime() ? sunset : diallegada;
             };
-            if (noon > sunrise && noon > sunset) {
+            if ((noon > sunrise && noon > sunset) || (noon == diallegada)) {
                 AM = true;
-            } else if (noon < sunrise && noon < sunset) {
+            } else if ((noon < sunrise && noon < sunset) || (noon == diasalida)) {
                 AM = false;
             } else {
                 AM = null;
