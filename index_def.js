@@ -185,15 +185,15 @@ function renderResults() {
             el.noon = (el.noon != null && el.noonOffset != originalOffset) ? new Date(el.noon.getTime() + (el.noonOffset.valueOf() - originalOffset) * ONE_HOUR) : null;
         };
 
-        hours2 = null != el.sunset ? el.sunset.getHours() : el.noon?.getHours(),
-            minutes2 = null != el.sunset ? el.sunset.getMinutes() : el.noon?.getMinutes(),
-            noonHour = el.noon?.getHours(),
-            noonMin = el.noon?.getMinutes(),
-            hours1 = null != el.sunrise ? el.sunrise.getHours() : el.noon?.getHours(),
-            minutes1 = null != el.sunrise ? el.sunrise.getMinutes() : el.noon?.getMinutes(),
-            day = el.noon?.getDate().toString(),
-            month = el.noon?.getMonth(),
-            year = el.noon?.getFullYear();
+        hours2 = (null != el.sunset) ? el.sunset.getHours() : el.noon?.getHours(),
+        minutes2 = (null != el.sunset) ? el.sunset.getMinutes() : el.noon?.getMinutes(),
+        noonHour = el.noon?.getHours(),
+        noonMin = el.noon?.getMinutes(),
+        hours1 = (null != el.sunrise) ? el.sunrise.getHours() : el.noon?.getHours(),
+        minutes1 = (null != el.sunrise) ? el.sunrise.getMinutes() : el.noon?.getMinutes(),
+        day = el.noon?.getDate().toString(),
+        month = el.noon?.getMonth(),
+        year = el.noon?.getFullYear();
 
         let adapt = (num) => num >= 9 ? num.toString() : "0" + num.toString();
 
@@ -274,7 +274,7 @@ function sectionAdapter() {
         /* Casos donde todo el trayecto ocurre de noche */
         if ((sunrise > diallegada
             && sunrise > diasalida
-            && subSection.length == 1)) {
+            /* && subSection.length == 1 */)) {
             night = true;
         } else {
             if (subSection.length > 1) {
@@ -383,6 +383,7 @@ async function sectionFormatter() {
             };
         };
         subSection = formatted;
+        console.log("Subsecciones formateadas: \n"+subSection);
     } catch (error) {
         console.log(error);
     }
