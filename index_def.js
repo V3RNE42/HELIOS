@@ -80,6 +80,16 @@ function main() {
     });
 };
 
+/** Esta función comprueba que la opción LOCAL sólo puedda 
+    ser marcada si el origen y el destino tienen diferencia horaria */
+async function checkLocal() {
+    if (datos['local']===true) {
+        let startOffset, endOffset;
+        startOffset = await getOffset(datos['start']);
+        endOffset = await getOffset(datos['end']);
+        datos['local'] = startOffset === endOffset ? false : true;
+    };
+};
 
 /** Actualiza el numero de subSecciones del trayecto principal   */
 async function updateSubsections() {
@@ -127,6 +137,7 @@ async function updateSubsections() {
       solarnoon: times.solarNoon,
     };
     try {
+        await checkLocal();
         await updateSingleSections();
         await sectionFormatter();
         sectionAdapter();
@@ -149,10 +160,9 @@ async function getOffset(coords) {
     return huso;
 };
 
-
 /** Function that renders the data in the screen */
 function renderResults() {
-    let { secciones, cambio, sun, local } = datos;
+    let { secciones, cambio, sun, local, night } = datos;
     let leftSeat;
     formulario.style.display = "none";
     let someInfo = document.createElement('div');
@@ -179,7 +189,7 @@ function renderResults() {
     secciones.forEach((el, i) => {
         let hours2, minutes2, noonHour, noonMin, hours1, minutes1, day, month, year;
         /* Ajuste a los husos horarios locales */
-        if (!local) {
+        if (local) {
             let originalOffset = secciones[0].sunriseOffset;
             el.sunset = (el.sunset != null && el.sunsetOffset != originalOffset) ? new Date(el.sunset.getTime() + (el.sunsetOffset.valueOf() - originalOffset) * ONE_HOUR) : el.sunset;
             el.sunrise = (el.sunrise != null && el.sunrisetOffset != originalOffset) ? new Date(el.sunrise.getTime() + (el.sunriseOffset.valueOf() - originalOffset) * ONE_HOUR) : el.sunrise;
@@ -199,9 +209,13 @@ function renderResults() {
         let adapt = (num) => num >= 9 ? num.toString() : "0" + num.toString();
 
         let texto = ``;
-        if (secciones.length > 1) {
-            texto = `Dia ${day + "/" + (month + 1) + "/" + year}: \n\t Tramo (${i + 1}/${secciones.length}) - <br>`;
+        if (!night) {
+            texto = `Dia ${day + "/" + (month + 1) + "/" + year}:`;
         };
+        if (secciones.length > 1) {
+            texto += `\n\t Tramo (${i + 1}/${secciones.length})`
+        };
+        texto += `<br>`;
 
         if (el.night) {
             texto += `🌙 El viaje va a producirse enteramente de noche 🌙`;
@@ -271,13 +285,8 @@ function sectionAdapter() {
         let sunset = subSection[indices[j]]["sunset"],
             sunrise = subSection[indices[j]]["sunrise"],
             noon = subSection[indices[j]]["noon"];
-        let night = false;
-        /* Casos donde todo el trayecto ocurre de noche */
-        if ((sunrise > diallegada
-            && sunrise > diasalida
-            /* && subSection.length == 1 */)) {
-            night = true;
-        } else {
+        let night = datos.night;
+        if (!night) {
             if (subSection.length > 1) {
                 if (j == 0) {
                     sunrise = sunrise.getTime() > diasalida.getTime() ? sunrise : diasalida;
@@ -298,7 +307,6 @@ function sectionAdapter() {
                 AM = null;
             };
         };
-
         cosa[indices[j]] = {
             sunrise: sunrise,
             sunriseCoords: sunrise != null ? subSection[indices[j]]["sunriseCoords"] : null,
@@ -323,8 +331,8 @@ function sectionAdapter() {
 /** Formatea las secciones para que sean entidades separadas, cada una con su
  *  amanecer, ocaso y mediodía solar    */
 async function sectionFormatter() {
+    let { start, end, local } = datos;
     try {
-        let { start, end } = datos;
         let formatted = [{}];
         //Eliminamos elementos sobrantes
         while (!subSection[0].date) subSection.shift();
@@ -344,8 +352,7 @@ async function sectionFormatter() {
                     event: eventos[j],
                     date: propiedades[j][eventos[j]],
                     coords: getNewCoords(datos["start"], datos["end"], (j > 0 ? 1 : 0)),
-                    /* Esto de los offsets hay que minimizarlo - hace que TODO TARDE DEMASIADO */
-                    offset: await getOffset(j > 0 ? datos["end"] : datos["start"]),
+                    offset: local ? await getOffset(j > 0 ? datos["end"] : datos["start"]) : null,
                     rate: j > 0 ? 1 : 0,
                 };
             };
@@ -368,7 +375,7 @@ async function sectionFormatter() {
             };
             sunriseOffset = subSection[i]["offset"];
             sunsetOffset = subSection[i + 1]["offset"];
-            noonOffset = await getOffset(noonCoords);
+            noonOffset = local ? await getOffset(noonCoords) : null;
             NaS = subSection[i]["coords"].lat > subSection[i + 1]["coords"].lat;
             formatted[i / 2] = {
                 sunrise: sunrise,
@@ -380,8 +387,7 @@ async function sectionFormatter() {
                 noon: noon,
                 noonCoords: noonCoords,
                 noonOffset: noonOffset,
-                NaS: NaS,
-                night: false
+                NaS: NaS
             };
         };
         subSection = formatted;
@@ -397,39 +403,43 @@ async function sectionFormatter() {
  * y marca sus coordenadas, su hora, el tipo de evento (amanecer o anochecer) y la 
  * tasa de avance respecto al trayecto total.   */
 async function updateSingleSections() {
-    let { start, diasalida, diallegada, local } = datos;
+    /** Máxima diferencia aceptable (milisegundos) */
+    let MAX_DIFF = 2500;
+    /**Tasa de avance a lo largo del trayecto*/
+    let RATE = 0;
+    let { start, end, diasalida, diallegada, local } = datos;
     let datePointer = diasalida;
     let diff = ONE_HOUR;
     let time = new Date(new Date().getTime() - ONE_DAY), tiempo = new Date();
     let total_time = diallegada.getTime() - diasalida.getTime();
     let limit = (Math.floor(total_time * 2 / ONE_DAY) >= 1) ? Math.floor(total_time * 2 / ONE_DAY) : 1;
-    /** Máxima diferencia aceptable (milisegundos) */
-    let MAX_DIFF = 2500;
+    /** Máxima cantidad de iteraciones en el bucle */
+    let MAX_LOOPS = limit**2;
     let increase = MAX_DIFF / total_time;
     let loops = 0, cont = 0;
     let { lat, lon } = start, coordPoint = { lat, lon };
     let seekSunset = isThereDaylightNow(coordPoint, datePointer);
-    /** Máxima cantidad de iteraciones en el bucle */
-    let MAX_LOOPS = Math.pow(MAX_DIFF, Math.pow(limit, Math.E));
     subSection = [{}];
-    subSection.push({ date: diasalida, rate: 0, timeZone: await getOffset(coordPoint) });
-    /**Tasa de avance a lo largo del trayecto*/
-    let RATE = 0;
-    let iteraciones = 0;
-    let getNewDatePointer = () => { return new Date(datos["diasalida"].getTime() + (Math.floor(RATE * total_time))); },
-        newCoords = () => { return getNewCoords(datos["start"], datos["end"], RATE) },
-        getRateOfDate = (date) => { return ((((date - datos["diasalida"].getTime())) / total_time)); };
-    while (cont <= (limit + 1) && datePointer.getTime() < diallegada.getTime() && loops < MAX_LOOPS) {
-        if (!seekSunset && !isThereDaylightNow(coordPoint, datePointer) && cont > 0) {
-            datePointer = new Date(datePointer.getTime() + ONE_DAY)
+    subSection.push({ date: diasalida, rate: 0, timeZone: local ? await getOffset(coordPoint) : null });
+    let iteraciones = 0, dayInfo;
+    let getNewDatePointer = () => new Date(diasalida.getTime() + (Math.floor(RATE * total_time))),
+        newCoords = () => getNewCoords(start, end, RATE),
+        getRateOfDate = (date) => (date - diasalida.getTime()) / total_time;
+    let nextDay = Math.floor(diasalida.getTime() / ONE_DAY) == Math.floor(diallegada.getTime() / ONE_DAY) - 1;
+    datos.night = (nextDay && 
+        getDayInfo(diasalida,  start.lat, start.lon).sunset.start.getTime() <= diasalida.getTime() && 
+        getDayInfo(diallegada, start.lat, start.lon).sunrise.end.getTime()  >= diallegada.getTime());
+    while (!datos.night && cont <= limit + nextDay*2 && datePointer.getTime() < diallegada.getTime() && loops < MAX_LOOPS) {
+        loops++;
+        if (!seekSunset && cont >= 0 ) {
+            datePointer = new Date(datePointer.getTime() + ONE_DAY);
         };
-        while (!(time.getTime() > subSection[subSection.length - 1].date.getTime()) || !(diff <= MAX_DIFF)) {
+        while (!(time.getTime()>subSection[subSection.length-1].date.getTime()) || !(diff<=MAX_DIFF)) {
+iteraciones%100==0 && console.log('rate: ', RATE, 'diff: ', diff);
             iteraciones++;
-            seekSunset
-                ? tiempo = getDayInfo(datePointer, coordPoint.lat, coordPoint.lon).sunset.start
-                : tiempo = getDayInfo(datePointer, coordPoint.lat, coordPoint.lon).sunrise.end;
-            time = new Date(tiempo.getTime());
-            tiempo = null;
+                dayInfo = getDayInfo(datePointer, coordPoint.lat, coordPoint.lon);
+                tiempo = seekSunset ? dayInfo.sunset.start : dayInfo.sunrise.end;
+                time = new Date(tiempo.getTime());
             RATE = getRateOfDate(time.getTime());
             coordPoint = newCoords();
             if ((seekSunset && isThereDaylightNow(coordPoint, datePointer))
@@ -440,11 +450,9 @@ async function updateSingleSections() {
             };
             coordPoint = newCoords();
             datePointer = getNewDatePointer();
-            seekSunset
-                ? tiempo = getDayInfo(datePointer, coordPoint.lat, coordPoint.lon).sunset.start
-                : tiempo = getDayInfo(datePointer, coordPoint.lat, coordPoint.lon).sunrise.end;
-            datePointer = new Date(tiempo.getTime());
-            tiempo = null;
+                dayInfo = getDayInfo(datePointer, coordPoint.lat, coordPoint.lon);
+                tiempo = seekSunset ? dayInfo.sunset.start : dayInfo.sunrise.end;
+                datePointer = new Date(tiempo.getTime());
             diff = getAbsoluteDiff(time.getTime(), datePointer.getTime());
         };
         if (RATE < 1 && RATE > subSection[subSection.length - 1].rate) {
@@ -452,16 +460,15 @@ async function updateSingleSections() {
                 event: seekSunset ? "sunset" : "sunrise",
                 date: datePointer,
                 coords: coordPoint,
-                offset: !local ? await getOffset(coordPoint) : null,
+                offset: local ? await getOffset(coordPoint) : null,
                 rate: RATE
             });
             diff = ONE_HOUR;
             cont++;
             seekSunset = !seekSunset;
         };
-        loops++;
     };
-    subSection.push({ date: diallegada, rate: 1 });
+    subSection.push({ date: diallegada, rate: 1 , timeZone: local ? await getOffset(coordPoint) : null });
     console.log("se han necesitado " + iteraciones + " iteraciones para una "
         + "precisión de +/- " + MAX_DIFF + " milisegundos en los cálculos");
     console.log(subSection);
