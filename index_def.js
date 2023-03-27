@@ -3,6 +3,7 @@ import sunCalc from "./SunCalc_function.js";
 //importo algunas funciones trigonometricas y matematicas que he creado aparte
 import { getNewCoords, getAbsoluteDiff } from "./trigo.js";
 import { Spinner } from "./spinner.js";
+import countries from "./countries.js";
 //con la funcion getTimes sacamos el MediodiaSolar
 let { getTimes } = SunCalc;
 //con la funcion getDayInfo sacamos el amanaecer y el anochecer (entre otros datos)
@@ -58,6 +59,16 @@ window.addEventListener('load', main());
 
 function main() {
     reloadId(ID);
+    countries.forEach((el) => {
+            // let option = document.createElement('option');
+            // option.value = el;
+            // option.innerText = el;
+            // el == 'Spain' ? option.selected = true : option.selected = false;
+            // paisOrigen.appendChild(option);
+            // paisDestino.appendChild(option);
+            paisOrigen.innerHTML += `<option value="${el}" ${el == 'Spain' ? 'selected' : ''}>${el}</option>`;
+            paisDestino.innerHTML += `<option value="${el}" ${el == 'Spain' ? 'selected' : ''}>${el}</option>`;
+        });
     onClick(submit, async () => {
         if (checkForm()) {
             Espinete.spin(document.querySelector('form'));
@@ -412,7 +423,7 @@ async function updateSingleSections() {
     let diff = ONE_HOUR;
     let time = new Date(new Date().getTime() - ONE_DAY), tiempo = new Date();
     let total_time = diallegada.getTime() - diasalida.getTime();
-    let limit = (Math.floor(total_time * 2 / ONE_DAY) >= 1) ? Math.floor(total_time * 2 / ONE_DAY) : 1;
+    let limit = (Math.floor(total_time * 2 / ONE_DAY) >= 1) ? Math.floor(total_time * 2 / ONE_DAY) : 2;
     /** Máxima cantidad de iteraciones en el bucle */
     let MAX_LOOPS = limit**2;
     let increase = MAX_DIFF / total_time;
@@ -422,37 +433,40 @@ async function updateSingleSections() {
     subSection = [{}];
     subSection.push({ date: diasalida, rate: 0, timeZone: local ? await getOffset(coordPoint) : null });
     let iteraciones = 0, dayInfo;
+    /* Funciones auxiliares */
     let getNewDatePointer = () => new Date(diasalida.getTime() + (Math.floor(RATE * total_time))),
         newCoords = () => getNewCoords(start, end, RATE),
-        getRateOfDate = (date) => (date - diasalida.getTime()) / total_time;
+        getRateOfDate = (date) => (date - diasalida.getTime()) / total_time,
+        updateTime = () => {
+            dayInfo = getDayInfo(datePointer, coordPoint.lat, coordPoint.lon);
+            tiempo = seekSunset ? dayInfo.sunset.start : dayInfo.sunrise.end;
+            return new Date(tiempo.getTime());
+        };
     let nextDay = Math.floor(diasalida.getTime() / ONE_DAY) == Math.floor(diallegada.getTime() / ONE_DAY) - 1;
     datos.night = (nextDay && 
         getDayInfo(diasalida,  start.lat, start.lon).sunset.start.getTime() <= diasalida.getTime() && 
         getDayInfo(diallegada, start.lat, start.lon).sunrise.end.getTime()  >= diallegada.getTime());
-    while (!datos.night && cont <= limit + nextDay*2 && datePointer.getTime() < diallegada.getTime() && loops < MAX_LOOPS) {
+    while (!datos.night && cont <= limit + 1 && datePointer.getTime() < diallegada.getTime() && loops < MAX_LOOPS) {
         loops++;
         if (!seekSunset && cont >= 0 ) {
             datePointer = new Date(datePointer.getTime() + ONE_DAY);
         };
         while (!(time.getTime()>subSection[subSection.length-1].date.getTime()) || !(diff<=MAX_DIFF)) {
-iteraciones%100==0 && console.log('rate: ', RATE, 'diff: ', diff);
             iteraciones++;
-                dayInfo = getDayInfo(datePointer, coordPoint.lat, coordPoint.lon);
-                tiempo = seekSunset ? dayInfo.sunset.start : dayInfo.sunrise.end;
-                time = new Date(tiempo.getTime());
+            time = updateTime();
+
             RATE = getRateOfDate(time.getTime());
             coordPoint = newCoords();
-            if ((seekSunset && isThereDaylightNow(coordPoint, datePointer))
-                || (!seekSunset && !isThereDaylightNow(coordPoint, datePointer))) {
+            if ((seekSunset && isThereDaylightNow(coordPoint, datePointer)) || 
+                (!seekSunset && !isThereDaylightNow(coordPoint, datePointer))) {
                 RATE += increase
             } else {
                 RATE -= increase
             };
             coordPoint = newCoords();
             datePointer = getNewDatePointer();
-                dayInfo = getDayInfo(datePointer, coordPoint.lat, coordPoint.lon);
-                tiempo = seekSunset ? dayInfo.sunset.start : dayInfo.sunrise.end;
-                datePointer = new Date(tiempo.getTime());
+            datePointer = updateTime();
+            
             diff = getAbsoluteDiff(time.getTime(), datePointer.getTime());
         };
         if (RATE < 1 && RATE > subSection[subSection.length - 1].rate) {
