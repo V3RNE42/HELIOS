@@ -257,7 +257,7 @@ function renderResults() {
             leftSeat = getLeftSeat(el["AM"], secciones.NaS);
             texto += `Siéntate en el lado ${leftSeat ? "<b>izquierdo</b>" : "<b>derecho</b>"} del vehículo durante todo el trayecto `;
         };
-        if (!el.night) texto += `${sun ? '☀️' : '⛅'}`;
+        if (!el.night) texto += `${sun ? '<span>☀️</span>' : '<span>⛅</span>'}`;
 
         let div = document.createElement("div");
         div.setAttribute('id', `${i % 2 == 0 ? 'light' : 'dark'}`);
