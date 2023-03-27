@@ -612,13 +612,8 @@ function getID(id) {
 /** Función que devuelve el valor de un elemento del DOM
  * @param {String} id ID del elemento DOM a seleccionar
  * @returns {*} Valor del elemento */
-function getVal(id) {
-    if (typeof id == "string") {
-        return getID(id)?.value;
-    } else {
-        return id?.value;
-    }
-}
+let getVal = (id) => typeof id == "string" ? getID(id)?.value : id?.value;
+    
 /** Comprueba que todos los campos del formulario están correctamente
  *  rellenos, y si no lo están, muestra un mensaje de error 
  *  @returns {Boolean} True si NO hay ningún error en el formulario*/
