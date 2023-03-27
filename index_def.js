@@ -215,7 +215,7 @@ function renderResults() {
 
         let texto = ``;
         if (!night) {
-            texto = `Dia ${day + "/" + (month + 1) + "/" + year}:`;
+            texto = `<b>Dia ${day + "/" + (month + 1) + "/" + year}:</b>`;
         };
         if (secciones.length > 1) {
             texto += `\n\t Tramo (${i + 1}/${secciones.length})`
