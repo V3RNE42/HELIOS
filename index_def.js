@@ -60,12 +60,6 @@ window.addEventListener('load', main());
 function main() {
     reloadId(ID);
     countries.forEach((el) => {
-            // let option = document.createElement('option');
-            // option.value = el;
-            // option.innerText = el;
-            // el == 'Spain' ? option.selected = true : option.selected = false;
-            // paisOrigen.appendChild(option);
-            // paisDestino.appendChild(option);
             paisOrigen.innerHTML += `<option value="${el}" ${el == 'Spain' ? 'selected' : ''}>${el}</option>`;
             paisDestino.innerHTML += `<option value="${el}" ${el == 'Spain' ? 'selected' : ''}>${el}</option>`;
         });
