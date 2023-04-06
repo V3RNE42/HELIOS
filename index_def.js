@@ -145,7 +145,6 @@ async function getOffset(coords) {
         return huso;
     } catch (error) {
         console.log(error);
-        window.alert(error);
         try {
             const backupEndpoint = 'https://api.timezonedb.com/v2.1/get-time-zone';
             const backupAPIkey = 'PVC3S7OZ8ZA9';
@@ -547,7 +546,6 @@ async function getCoords(city, country) {
         return { lon: parseFloat(data.lon), lat: parseFloat(data.lat) };
     } catch (error) {
         console.log(error);
-        window.alert(error);
         try {
             const apiKey = 'b40897201f924666a9e86f365d5efb13';
             const backupResponse = await fetch(`https://api.opencagedata.com/geocode/v1/json?q=${city},${country}&key=${apiKey}`);
