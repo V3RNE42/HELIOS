@@ -143,8 +143,8 @@ async function getOffset(coords) {
         let data = await response.json();
         if (data!=undefined) {
             huso = data.timezone_offset.valueOf();
+            return huso;
         } else throw new Error('No se pudo hacer fetch');
-        return huso;
     } catch (error) {
         console.log(error);
         try {
