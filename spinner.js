@@ -22,7 +22,7 @@ var defaults = {
     animation: 'spinner-line-fade-default',
     rotate: 0,
     direction: 1,
-    speed: 0.00083333,
+    speed: 0.83333,
     zIndex: 2e9,
     className: 'spinner',
     top: '50%',
