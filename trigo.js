@@ -1,22 +1,22 @@
-/** Returns the absolute difference between two numbers
+/** Devuelve la diferencia absoluta entre dos números
  *  @param {Number} num1     @param {Number} num2 
- *  @returns {Number} absolute difference between num1 and num2 */
+ *  @returns {Number} Diferencia absoluta */
 function getAbsoluteDiff(num1, num2)  { 
     return num1>num2? num1-num2 : num2-num1;};
 
-/** Function that returns the new coordinates of a point, 
- *  based on the distance between the origin and the destination,
- *  the angle between them and the rate of movement
- *  @param {Object} start of the journey (lat, lon)
- *  @param {Object} end of the journey   (lat, lon)
- *  @param {Number} rate (relative rate) of advance (0 to 1)
-*  @returns {Object} lat, lon of the new coordinates  */
+/** Devuelve las nuevas coordinadas de un punto,
+ *  basándose en la distancia entre origen y destino,
+ *  el ángulo entre ellos y el ratio de movimiento
+ *  @param {Object} start Origen del viaje (lat, lon)
+ *  @param {Object} end Destino del viaje   (lat, lon)
+ *  @param {Number} rate (ratio relativo) de avance (0 a 1)
+*  @returns {Object} lat, lon de las nuevas coordenadas  */
 function getNewCoords(startCoords, endCoords, fraction) {
-    // First, we'll calculate the angular distance between the start and end coordinates using the Haversine formula
+    // Primero, calculamos la distancia angular entre origen y destino usando la fórmula del semiverseno
     if (fraction==0) return startCoords;
     if (fraction==1) return endCoords;
     const distance = getAngularDistance(startCoords, endCoords);
-    // Then, we'll calculate the interpolated coordinates based on the fraction of distance traveled
+    // Después calculamos las coordenadas interpoladas, basándonos en el ratio de avance 'rate'
     const fractionDistance = fraction * distance;
     const bearing = getBearing(startCoords, endCoords);
     const newCoords = getDestinationCoords(startCoords, fractionDistance, bearing);
@@ -24,7 +24,7 @@ function getNewCoords(startCoords, endCoords, fraction) {
   }
   
   function getAngularDistance(startCoords, endCoords) {
-    const earthRadius = 6371; // assume the earth's radius is 6371 km
+    const earthRadius = 6371; // Radio terrestre => 6,371 km
     const lat1 = toRadians(startCoords.lat);
     const lat2 = toRadians(endCoords.lat);
     const lng1 = toRadians(startCoords.lon);
@@ -37,12 +37,12 @@ function getNewCoords(startCoords, endCoords, fraction) {
     return distance;
   }
 
-  // This function converts degrees to radians
+  // Convierte grados a radianes
   function toRadians(degrees) {
     return degrees * Math.PI / 180;
   }
   
-  // This function calculates the bearing between two coordinates
+  // Calcula la el ángulo de inclinación entre dos coordenadas
   function getBearing(startCoords, endCoords) {
     const lat1 = toRadians(startCoords.lat);
     const lat2 = toRadians(endCoords.lat);
@@ -54,9 +54,9 @@ function getNewCoords(startCoords, endCoords, fraction) {
     return (bearing + 2 * Math.PI) % (2 * Math.PI);
   }
   
-  // This function calculates the coordinates at a given distance and bearing from a starting coordinate
+  // Calcula las coordenadas de destino
   function getDestinationCoords(startCoords, distance, bearing) {
-    const earthRadius = 6371; // assume the earth's radius is 6,371 km
+    const earthRadius = 6371; // Radio terrestre => 6,371 km
     const lat1 = toRadians(startCoords.lat);
     const lng1 = toRadians(startCoords.lon);
     const lat2 = Math.asin(Math.sin(lat1) * Math.cos(distance / earthRadius) + Math.cos(lat1) * Math.sin(distance / earthRadius) * Math.cos(bearing));
@@ -67,7 +67,7 @@ function getNewCoords(startCoords, endCoords, fraction) {
     };
   }
   
-  // This function converts radians to degrees
+  // Convierte radianes a grados
   function toDegrees(radians) {
     return radians * 180 / Math.PI;
   }

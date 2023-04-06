@@ -17,29 +17,8 @@ let DATE_ADJUSTMENT = (34 * 60 + 42) * 60000;
 let ONE_DAY = 24 * 60 * 60 * 1000;
 /** 1 hora en milisegundos */
 let ONE_HOUR = 60 * 60 * 1000;
-/**opciones para el SPINNER */
-let opts = {
-    lines: 8, /* The number of lines to draw */
-    length: 11, /* The length of each line */
-    width: 36, /* The line thickness */
-    radius: 41, /* The radius of the inner circle */
-    scale: 1, /* Scales overall size of the spinner */
-    corners: 0.8, /* Corner roundness (0..1) */
-    speed: 1.7, /* Rounds per second */
-    rotate: 90, /* The rotation offset */
-    animation: 'spinner-line-fade-more', /* The CSS animation name for the lines */
-    direction: -1, /* 1: clockwise, -1: counterclockwise */
-    color: '#3d8fe6', /* CSS color or array of colors */
-    fadeColor: 'transparent', /* CSS color or array of colors */
-    top: '52%', /* Top position relative to parent */
-    left: '51%', /* Left position relative to parent */
-    shadow: '0 0 5px transparent', /* Box-shadow for the lines */
-    zIndex: 2000000000, /* The z-index (defaults to 2e9) */
-    className: 'spinner', /* The CSS class to assign to the spinner */
-    position: 'absolute', /* Element positioning */
-};
 /**Puramente ornamental */
-let Espinete = new Spinner(opts);
+let Solete = new Spinner();
 /** Info relativa a coordenadas y posiciones solares |
  * start - inicio espacio/tiempo del viaje |
  * end   - final espacio/tiempo  del viaje |
@@ -55,7 +34,7 @@ let subSection = [{}];
 /** Array de información principal con la que trabajar */
 let datos = [{}];
 
-window.addEventListener('load', main());
+window.addEventListener('load',   main());
 
 function main() {
     reloadId(ID);
@@ -65,19 +44,19 @@ function main() {
         });
     onClick(submit, async () => {
         if (checkForm()) {
-            Espinete.spin(document.querySelector('form'));
+            Solete.spin(document.querySelector('form'));
             datos = [{}];
             datos.push({ ...form.forEach((el) => datos[el] = valor(el)) });
             await updateSubsections();
-            Espinete.stop();
-            Espinete.spin(document.querySelector('form'));
+            Solete.stop();
+            Solete.spin(document.querySelector('form'));
             if (datos.length > 0) {
                 console.log(datos);
                 renderResults();
             } else {
                 window.alert("No hay datos!");
             };
-            Espinete.stop();
+            Solete.stop();
         };
     });
     onClick(reset, () => {
@@ -165,7 +144,7 @@ async function getOffset(coords) {
     return huso;
 };
 
-/** Function that renders the data in the screen */
+/** Renderiza los datos en pantalla*/
 function renderResults() {
     let { secciones, cambio, sun, local, night } = datos;
     let leftSeat;
@@ -225,8 +204,7 @@ function renderResults() {
         if (el.night) {
             texto += `🌙 El viaje va a producirse enteramente de noche 🌙`;
         } else if (el["AM"] == null && el["noon"] != null) {
-            if (cambio) {
-                /* Es posible cambiar de asiento */
+            if (cambio) { /* Es posible cambiar de asiento */
                 let sameTime = !(hours1 == noonHour && minutes1 == noonMin);
                 if (sameTime) {
                     texto += `Siéntate en el lado ${getLeftSeat(true, secciones.NaS) ? "<b>izquierdo</b>" : "<b>derecho</b>"} del vehículo de ${adapt(hours1) + ":" + adapt(minutes1)} ` +
@@ -236,8 +214,7 @@ function renderResults() {
                 texto += sameTime
                     ? `de ${adapt(noonHour) + ":" + adapt(noonMin)} a ${adapt(hours2) + ":" + adapt(minutes2)} `
                     : `durante todo el trayecto  `;
-            } else {
-                /* No es posible cambiar de asiento */
+            } else { /* No es posible cambiar de asiento */
                 if (el["sunrise"] != null) {
                     let morning = el["noon"].getTime() - el["sunrise"].getTime(),
                         afternoon = el["sunset"].getTime() - el["noon"].getTime();
@@ -252,8 +229,7 @@ function renderResults() {
                         `a ${adapt(hours2) + ":" + adapt(minutes2)} `;
                 };
             };
-        } else {
-            /* No es necesario cambiarse: todo el trayecto courre ANTES o DESPUÉS del Mediodia Solar */
+        } else { /* No es necesario cambiarse: todo el trayecto courre ANTES o DESPUÉS del Mediodia Solar */
             leftSeat = getLeftSeat(el["AM"], secciones.NaS);
             texto += `Siéntate en el lado ${leftSeat ? "<b>izquierdo</b>" : "<b>derecho</b>"} del vehículo durante todo el trayecto `;
         };
@@ -539,19 +515,34 @@ async function updateCoords() {
 /** Conseguimos las coordenadas de las ciudades que le 
  * pasemos como parámetros. Para ello, usaremos la API de OpenStreetMap, que nos devuelve
  * las coordenadas de una ciudad a partir de su nombre. 
+ * En caso de que la API de OpenStreetMap no funcione, usaremos la API de OpenCageData.
  * @param {String} city @param {String} country /país 
  * @return {JSON} JSON con los datos Lon(gitud) y Lat(itud)*/
 async function getCoords(city, country) {
     try {
         const response = await fetch(`https://nominatim.openstreetmap.org/search.php?city=${city}&country=${country}&format=jsonv2`);
         let data = await response.json();
-        if (data.length > 0) { data = data[0]; };
+        if (data.length > 0) { 
+            data = data[0]; 
+        } else throw new Error('No se pudo obtener datos de nominatim');
         return { lon: parseFloat(data.lon), lat: parseFloat(data.lat) };
     } catch (error) {
         console.log(error);
-        return null;
+        window.alert(error);
+        try {
+            const apiKey = 'b40897201f924666a9e86f365d5efb13';
+            const backupResponse = await fetch(`https://api.opencagedata.com/geocode/v1/json?q=${city},${country}&key=${apiKey}`);
+            let backupData = await backupResponse.json();
+            if (backupData.results.length > 0) { 
+                backupData = backupData.results[0]; 
+            } else throw new Error('No se pudo obtener datos de OpenCage Data API');
+            return { lon: parseFloat(backupData.geometry.lng), lat: parseFloat(backupData.geometry.lat) };
+        } catch (backupError) {
+            console.log(backupError);
+            window.alert(backupError);
+        }
     }
-}
+};
 /** Retorna el valor "cocinado" de un elemento del DOM, listo para ser usado
  * @param {String} id 
  * @returns {Boolean, Number, String, null} */
