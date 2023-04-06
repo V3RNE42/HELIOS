@@ -138,11 +138,30 @@ async function getOffset(coords) {
         APIkey = '7dad049d4d154390835146e2daa22d6f',
         { lat, lon } = coords,
         huso = 0;
-    let response = await fetch(`${endpoint}?apiKey=${APIkey}&lat=${lat}&long=${lon}`);
-    let data = await response.json();
-    huso = data.timezone_offset.valueOf();
-    return huso;
-};
+    try {
+        let response = await fetch(`${endpoint}?apiKey=${APIkey}&lat=${lat}&long=${lon}`);
+        let data = await response.json();
+        huso = data.timezone_offset.valueOf();
+        return huso;
+    } catch (error) {
+        console.log(error);
+        window.alert(error);
+        try {
+            const backupEndpoint = 'https://api.timezonedb.com/v2.1/get-time-zone';
+            const backupAPIkey = 'PVC3S7OZ8ZA9';
+            const backupResponse = await fetch(`${backupEndpoint}?key=${backupAPIkey}&format=json&by=position&lat=${lat}&lng=${lon}`);
+            let backupData = await backupResponse.json();
+            if (backupData.status === 'OK') {
+                huso = backupData.gmtOffset;
+            } else throw new Error('No se pudo obtener datos de TimeZoneDB API');
+            return huso;
+        } catch (backupError) {
+            console.log(backupError);
+            window.alert(backupError);
+        }
+    }
+}
+
 
 /** Renderiza los datos en pantalla*/
 function renderResults() {
@@ -534,6 +553,7 @@ async function getCoords(city, country) {
             const backupResponse = await fetch(`https://api.opencagedata.com/geocode/v1/json?q=${city},${country}&key=${apiKey}`);
             let backupData = await backupResponse.json();
             if (backupData.results.length > 0) { 
+                console.log(backupData);
                 backupData = backupData.results[0]; 
             } else throw new Error('No se pudo obtener datos de OpenCage Data API');
             return { lon: parseFloat(backupData.geometry.lng), lat: parseFloat(backupData.geometry.lat) };
