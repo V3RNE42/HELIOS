@@ -42,26 +42,22 @@ var Spinner = /** @class */ (function () {
     
         var earth = css(document.createElement('div'), {
             position: 'absolute',
-            top: -25 + "px",
-            left: (opts.radius - 25) + 'px',
-            width: '50px',
-            height: '50px',
-            background: 'blue',
-            borderRadius: '50%',
+            top: '-0.5em',
+            left: (opts.radius - 0.5) + 'px',
+            fontSize: '2em',
         });
-        el.append(earth);
+        earth.textContent = '🌍';
+        el.appendChild(earth);
     
         var sun = css(document.createElement('div'), {
             position: 'absolute',
             top: '50%',
             left: '50%',
-            width: '150px',
-            height: '150px',
-            background: 'yellow',
-            borderRadius: '50%',
+            fontSize: '5em',
             transform: 'translate(-50%, -50%)',
         });
-        el.append(sun);
+        sun.textContent = '☀️';
+        el.appendChild(sun);
     }
     function Spinner(opts) {
         if (opts === void 0) { opts = {}; }
