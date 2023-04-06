@@ -134,14 +134,15 @@ async function updateSubsections() {
 
 /** Devuelve el huso horario de las coordenadas dadas */
 async function getOffset(coords) {
+    const proxyUrl = 'https://cors-anywhere.herokuapp.com/';
     let endpoint = 'https://api.ipgeolocation.io/timezone',
         APIkey = '7dad049d4d154390835146e2daa22d6f',
         { lat, lon } = coords,
         huso = 0;
     try {
-        let response = await fetch(`${endpoint}?apiKey=${APIkey}&lat=${lat}&long=${lon}`);
+        let response = await fetch(`${proxyUrl}${endpoint}?apiKey=${APIkey}&lat=${lat}&long=${lon}`);
         let data = await response.json();
-        if (data!=undefined || data!=null) {
+        if (data != undefined || data != null) {
             huso = data.timezone_offset.valueOf();
             return huso;
         } else throw new Error('No se pudo hacer fetch');
@@ -150,7 +151,7 @@ async function getOffset(coords) {
         try {
             const backupEndpoint = 'https://api.timezonedb.com/v2.1/get-time-zone';
             const backupAPIkey = 'PVC3S7OZ8ZA9';
-            const backupResponse = await fetch(`${backupEndpoint}?key=${backupAPIkey}&format=json&by=position&lat=${lat}&lng=${lon}`);
+            const backupResponse = await fetch(`${proxyUrl}${backupEndpoint}?key=${backupAPIkey}&format=json&by=position&lat=${lat}&lng=${lon}`);
             let backupData = await backupResponse.json();
             if (backupData.status === 'OK') {
                 huso = backupData.gmtOffset;
@@ -162,6 +163,7 @@ async function getOffset(coords) {
         }
     }
 }
+
 
 
 /** Renderiza los datos en pantalla*/
