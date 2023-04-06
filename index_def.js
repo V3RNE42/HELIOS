@@ -142,7 +142,7 @@ async function getOffset(coords) {
     try {
         let response = await fetch(`${proxyUrl}${endpoint}?apiKey=${APIkey}&lat=${lat}&long=${lon}`);
         let data = await response.json();
-        if (data != undefined || data != null) {
+        if (data.status == 'OK') {
             huso = data.timezone_offset.valueOf();
             return huso;
         } else throw new Error('No se pudo hacer fetch');
