@@ -44,14 +44,14 @@ function main() {
         });
     onClick(submit, async () => {
         if (checkForm()) {
-            Solete.spin(document.querySelector('form'));
+            formulario.style.display = "none";
+            Solete.spin(document.querySelector('body'));
             datos = [{}];
             datos.push({ ...form.forEach((el) => datos[el] = valor(el)) });
             await updateSubsections();
             Solete.stop();
             Solete.spin(document.querySelector('form'));
             if (datos.length > 0) {
-                console.log(datos);
                 renderResults();
             } else {
                 window.alert("No hay datos!");
@@ -171,11 +171,15 @@ function renderResults() {
     let leftSeat;
     formulario.style.display = "none";
     let someInfo = document.createElement('div');
+    let destino = datos["destino"], origen = datos["origen"], 
+        paisOrigen = datos["paisOrigen"], paisDestino = datos["paisDestino"];
+    [destino, origen, paisOrigen, paisDestino].forEach((e) => {e = e.replaceAll("%20"," ")});
+
     someInfo.innerHTML =
         `<b>Salida:</b>  ${datos["diasalida"]} <br>
         <b>Llegada:</b>  ${datos["diallegada"]} <br>
-        <b>Origen:</b>   ${datos["origen"]} , ${datos["paisOrigen"]}<br>
-        <b>Destino:</b>  ${datos["destino"]}, ${datos["paisDestino"]} <br>`;
+        <b>Origen:</b>   ${origen} , ${paisOrigen}<br>
+        <b>Destino:</b>  ${destino}, ${paisDestino} <br>`;
     document.querySelector('header').appendChild(someInfo);
 
     /** Analiza la propiedad AnteMeridiana y devuelve

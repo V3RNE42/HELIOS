@@ -14,7 +14,7 @@ var defaults = {
     lines: 1,
     length: 0,
     width: 0,
-    radius: document.body.clientWidth * 0.05,
+    radius: document.body.clientWidth * 0.075,
     scale: 1.0,
     corners: 1,
     color: '#000',
