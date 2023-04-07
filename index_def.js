@@ -49,8 +49,6 @@ function main() {
             datos = [{}];
             datos.push({ ...form.forEach((el) => datos[el] = valor(el)) });
             await updateSubsections();
-            Solete.stop();
-            Solete.spin(document.querySelector('form'));
             if (datos.length > 0) {
                 renderResults();
             } else {
