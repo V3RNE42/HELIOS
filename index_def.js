@@ -652,7 +652,8 @@ function checkForm() {
         msg += "El campo de horas no es correcto \n";
         NoErr = false;
     }
-    if (getVal("diasalida") > getVal("diallegada")) {
+    if ((getVal("diasalida") > getVal("diallegada") ||
+        (getVal("diasalida") == getVal("diallegada") && getVal("minutosalida") > getVal("minutollegada")))) {
         msg += "La fecha de llegada no puede ser anterior a la de salida \n";
         NoErr = false;
     }
