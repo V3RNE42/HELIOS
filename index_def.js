@@ -229,10 +229,10 @@ function renderResults() {
             if (cambio) { /* Es posible cambiar de asiento */
                 let sameTime = !(hours1 == noonHour && minutes1 == noonMin);
                 if (sameTime) {
-                    texto += `Siéntate en el lado ${getLeftSeat(true, secciones.NaS) ? "<b>izquierdo</b>" : "<b>derecho</b>"} del vehículo de ${adapt(hours1) + ":" + adapt(minutes1)} ` +
+                    texto += `Siéntate en el lado ${getLeftSeat(true, el.NaS) ? "<b>izquierdo</b>" : "<b>derecho</b>"} del vehículo de ${adapt(hours1) + ":" + adapt(minutes1)} ` +
                         `a ${adapt(noonHour) + ":" + adapt(noonMin)}, y luego`;
                 };
-                texto += `\t  ${sameTime ? 's' : 'S'}iéntate al lado ${getLeftSeat(false, secciones.NaS) ? "<b>izquierdo</b>" : "<b>derecho</b>"} del vehículo `;
+                texto += `\t  ${sameTime ? 's' : 'S'}iéntate al lado ${getLeftSeat(false, el.NaS) ? "<b>izquierdo</b>" : "<b>derecho</b>"} del vehículo `;
                 texto += sameTime
                     ? `de ${adapt(noonHour) + ":" + adapt(noonMin)} a ${adapt(hours2) + ":" + adapt(minutes2)} `
                     : `durante todo el trayecto  `;
@@ -240,19 +240,19 @@ function renderResults() {
                 if (el["sunrise"] != null) {
                     let morning = el["noon"].getTime() - el["sunrise"].getTime(),
                         afternoon = el["sunset"].getTime() - el["noon"].getTime();
-                    leftSeat = getLeftSeat(morning >= afternoon, secciones.NaS);
+                    leftSeat = getLeftSeat(morning >= afternoon, el.NaS);
                     texto += `Siéntate en el lado ${leftSeat ? "<b>izquierdo</b>" : "<b>derecho</b>"} del vehículo de ${adapt(hours1) + ":" + adapt(minutes1)} ` +
                         `a ${adapt(hours2) + ":" + adapt(minutes2)}  `;
                 } else if (el["sunrise"] == null) {
-                    texto += `Siéntate en el lado ${getLeftSeat(false, secciones.NaS) ? "<b>izquierdo</b>" : "<b>derecho</b>"} del vehículo de ${adapt(hours1) + ":" + adapt(minutes1)} ` +
+                    texto += `Siéntate en el lado ${getLeftSeat(false, el.NaS) ? "<b>izquierdo</b>" : "<b>derecho</b>"} del vehículo de ${adapt(hours1) + ":" + adapt(minutes1)} ` +
                         `a ${adapt(hours2) + ":" + adapt(minutes2)}  `;
                 } else if (el["sunset"] == null) {
-                    texto += `Siéntate en el lado ${getLeftSeat(true, secciones.NaS) ? "<b>izquierdo</b>" : "<b>derecho</b>"} del vehículo de ${adapt(hours1) + ":" + adapt(minutes1)} ` +
+                    texto += `Siéntate en el lado ${getLeftSeat(true, el.NaS) ? "<b>izquierdo</b>" : "<b>derecho</b>"} del vehículo de ${adapt(hours1) + ":" + adapt(minutes1)} ` +
                         `a ${adapt(hours2) + ":" + adapt(minutes2)} `;
                 };
             };
         } else { /* No es necesario cambiarse: todo el trayecto courre ANTES o DESPUÉS del Mediodia Solar */
-            leftSeat = getLeftSeat(el["AM"], secciones.NaS);
+            leftSeat = getLeftSeat(el["AM"], el.NaS);
             texto += `Siéntate en el lado ${leftSeat ? "<b>izquierdo</b>" : "<b>derecho</b>"} del vehículo durante todo el trayecto `;
         };
         if (!el.night) texto += `${sun ? '<span>☀️</span>' : '<span>⛅</span>'}`;
