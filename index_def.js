@@ -46,7 +46,6 @@ function main() {
         if (checkForm()) {
             formulario.style.display = "none";
             Solete.spin(document.querySelector('body'));
-            datos = [{}];
             datos.push({ ...form.forEach((el) => datos[el] = valor(el)) });
             await updateSubsections();
             if (datos.length > 0) {
