@@ -35,30 +35,29 @@ let subSection = [{}];
 let datos = [{}];
 
 window.addEventListener('load', () => {
-        reloadId(ID);
-        countries.forEach((el) => {
-                paisOrigen.innerHTML += `<option value="${el}" ${el == 'Spain' ? 'selected' : ''}>${el}</option>`;
-                paisDestino.innerHTML += `<option value="${el}" ${el == 'Spain' ? 'selected' : ''}>${el}</option>`;
-            });
-        onClick(submit, async () => {
-            if (checkForm()) {
-                formulario.style.display = "none";
-                Solete.spin(document.querySelector('body'));
-                datos.push({ ...form.forEach((el) => datos[el] = valor(el)) });
-                await updateSubsections();
-                if (datos.length > 0) {
-                    renderResults();
-                } else {
-                    window.alert("No hay datos!");
-                };
-                Solete.stop();
+    reloadId(ID);
+    countries.forEach((el) => {
+            paisOrigen.innerHTML += `<option value="${el}" ${el == 'Spain' ? 'selected' : ''}>${el}</option>`;
+            paisDestino.innerHTML += `<option value="${el}" ${el == 'Spain' ? 'selected' : ''}>${el}</option>`;
+        });
+    onClick(submit, async () => {
+        if (checkForm()) {
+            formulario.style.display = "none";
+            Solete.spin(document.querySelector('body'));
+            datos.push({ ...form.forEach((el) => datos[el] = valor(el)) });
+            await updateSubsections();
+            if (datos.length > 0) {
+                renderResults();
+            } else {
+                window.alert("No hay datos!");
             };
-        });
-        onClick(reset, () => {
-            window.location.reload();
-        });
-    }
-);
+            Solete.stop();
+        };
+    });
+    onClick(reset, () => {
+        window.location.reload();
+    });
+});
 
 /** Esta función comprueba que la opción LOCAL sólo puedda 
     ser marcada si el origen y el destino tienen diferencia horaria */
