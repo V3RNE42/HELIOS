@@ -34,8 +34,7 @@ let subSection = [{}];
 /** Array de información principal con la que trabajar */
 let datos = [{}];
 
-window.addEventListener('load',   
-    () => {
+window.addEventListener('load', () => {
         reloadId(ID);
         countries.forEach((el) => {
                 paisOrigen.innerHTML += `<option value="${el}" ${el == 'Spain' ? 'selected' : ''}>${el}</option>`;
