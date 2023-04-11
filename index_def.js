@@ -34,32 +34,32 @@ let subSection = [{}];
 /** Array de información principal con la que trabajar */
 let datos = [{}];
 
-window.addEventListener('load',   main());
-
-function main() {
-    reloadId(ID);
-    countries.forEach((el) => {
-            paisOrigen.innerHTML += `<option value="${el}" ${el == 'Spain' ? 'selected' : ''}>${el}</option>`;
-            paisDestino.innerHTML += `<option value="${el}" ${el == 'Spain' ? 'selected' : ''}>${el}</option>`;
-        });
-    onClick(submit, async () => {
-        if (checkForm()) {
-            formulario.style.display = "none";
-            Solete.spin(document.querySelector('body'));
-            datos.push({ ...form.forEach((el) => datos[el] = valor(el)) });
-            await updateSubsections();
-            if (datos.length > 0) {
-                renderResults();
-            } else {
-                window.alert("No hay datos!");
+window.addEventListener('load',   
+    () => {
+        reloadId(ID);
+        countries.forEach((el) => {
+                paisOrigen.innerHTML += `<option value="${el}" ${el == 'Spain' ? 'selected' : ''}>${el}</option>`;
+                paisDestino.innerHTML += `<option value="${el}" ${el == 'Spain' ? 'selected' : ''}>${el}</option>`;
+            });
+        onClick(submit, async () => {
+            if (checkForm()) {
+                formulario.style.display = "none";
+                Solete.spin(document.querySelector('body'));
+                datos.push({ ...form.forEach((el) => datos[el] = valor(el)) });
+                await updateSubsections();
+                if (datos.length > 0) {
+                    renderResults();
+                } else {
+                    window.alert("No hay datos!");
+                };
+                Solete.stop();
             };
-            Solete.stop();
-        };
-    });
-    onClick(reset, () => {
-        window.location.reload();
-    });
-};
+        });
+        onClick(reset, () => {
+            window.location.reload();
+        });
+    }
+);
 
 /** Esta función comprueba que la opción LOCAL sólo puedda 
     ser marcada si el origen y el destino tienen diferencia horaria */
@@ -93,7 +93,6 @@ async function updateSubsections() {
             return;
         };
     } catch (error) {
-        window.alert(error.message);
         console.log(error);
     };
     //adquirimos amaneceres y anocheceres en origen y destino
@@ -155,12 +154,9 @@ async function getOffset(coords) {
             return huso;
         } catch (backupError) {
             console.log(backupError);
-            window.alert(backupError);
         }
     }
 }
-
-
 
 /** Renderiza los datos en pantalla*/
 function renderResults() {
@@ -546,8 +542,8 @@ async function getCoords(city, country) {
         let data = await response.json();
         if (data.length > 0) { 
             data = data[0]; 
+            return { lon: parseFloat(data.lon), lat: parseFloat(data.lat) };
         } else throw new Error('No se pudo obtener datos de nominatim');
-        return { lon: parseFloat(data.lon), lat: parseFloat(data.lat) };
     } catch (error) {
         console.log(error);
         try {
@@ -557,11 +553,10 @@ async function getCoords(city, country) {
             if (backupData.results.length > 0) { 
                 console.log(backupData);
                 backupData = backupData.results[0]; 
+                return { lon: parseFloat(backupData.geometry.lng), lat: parseFloat(backupData.geometry.lat) };
             } else throw new Error('No se pudo obtener datos de OpenCage Data API');
-            return { lon: parseFloat(backupData.geometry.lng), lat: parseFloat(backupData.geometry.lat) };
         } catch (backupError) {
             console.log(backupError);
-            window.alert(backupError);
         }
     }
 };
