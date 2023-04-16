@@ -610,9 +610,16 @@ function onClick(elem, fun) {
 function reloadId(IDES) {
     //imprescindible
     IDES.forEach((el) => (window[el] = getID(el) ? getID(el) : null));
-    //extras
-    const colorToggle = getID('color-toggle');
+    //UIX: ajuste de paleta de colores
+    let colorToggle = getID('color-toggle');
     colorToggle.classList.add('rotate');
+    onClick(colorToggle,() => {
+        colorToggle.textContent = colorToggle.textContent === '🌙' ? '☀️' : '🌙';
+        document.body.classList.toggle('invert-colors');
+        const allTextElements = document.querySelectorAll('h1, a, label, small, button, input, select');
+        allTextElements.forEach(nodo => nodo.classList.toggle('invert-text-colors'));
+    });
+    //ajuste de horas en caso de error
     [...horas, "diasalida", "diallegada"].forEach((inputId) => {
         getID(inputId).addEventListener("change", updateArrivalTime());});
     document.querySelector('header').addEventListener('mouseenter', () => {
