@@ -11,10 +11,10 @@
     flex-direction: column;
 }
 body {
-    background-color: rgb(251, 191, 100);
+    background-color: #fff7d9;
 }
 div.wrapper {
-    background-color: rgb(251, 191, 100);
+    background-color: #fff7d9;
     justify-content: center;
     padding-left: 10%;
     padding-right: 10%;
@@ -85,6 +85,7 @@ input#diasalida {
     margin: 0.25em;
 }
 #light {
+    margin-top: 2.5%;
     background-color: rgb(251, 117, 100);
     border: 1px solid orange;
 }
@@ -95,7 +96,7 @@ input#diasalida {
 
 @keyframes spinner-line-fade-more {
     0%, 100% {
-      opacity: 0; /* minimum opacity */
+      opacity: 0; 
     }
     1% {
       opacity: 1;
@@ -104,7 +105,7 @@ input#diasalida {
   
   @keyframes spinner-line-fade-quick {
     0%, 39%, 100% {
-      opacity: 0.25; /* minimum opacity */
+      opacity: 0.25; 
     }
     40% {
       opacity: 1;
@@ -113,7 +114,7 @@ input#diasalida {
   
   @keyframes spinner-line-fade-default {
     0%, 100% {
-      opacity: 0.22; /* minimum opacity */
+      opacity: 0.22; 
     }
     1% {
       opacity: 1;
@@ -122,7 +123,6 @@ input#diasalida {
   
   @keyframes spinner-line-shrink {
     0%, 25%, 100% {
-      /* minimum scale and opacity */
       transform: scale(0.5);
       opacity: 0.25;
     }

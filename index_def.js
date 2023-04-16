@@ -34,7 +34,7 @@ let subSection = [{}];
 /** Array de información principal con la que trabajar */
 let datos = [{}];
 
-window.addEventListener('load', () => {
+window.addEventListener('DOMContentLoaded', () => {
     reloadId(ID);
     countries.forEach((el) => {
             paisOrigen.innerHTML += `<option value="${el}" ${el == 'Spain' ? 'selected' : ''}>${el}</option>`;
@@ -264,6 +264,7 @@ function renderResults() {
     boton.setAttribute("class", "preferencia");
     boton.setAttribute("id", "resetea");
     render.appendChild(boton);
+    render.style.display = 'inherit';
     reloadId(ID);
     onClick(resetea, () => { window.location.reload(); });
 };
@@ -607,7 +608,17 @@ function onClick(elem, fun) {
 }
 /**Añade a cada elemento del array ID su elemento del DOM correspondiente*/
 function reloadId(IDES) {
+    //imprescindible
     IDES.forEach((el) => (window[el] = getID(el) ? getID(el) : null));
+    //extras
+    const colorToggle = getID('color-toggle');
+    colorToggle.classList.add('rotate');
+    [...horas, "diasalida", "diallegada"].forEach((inputId) => {
+        getID(inputId).addEventListener("change", updateArrivalTime());});
+    document.querySelector('header').addEventListener('mouseenter', () => {
+        getID('info-text').style.display = 'inline';});
+    document.querySelector('header').addEventListener('mouseleave', () => {
+        getID('info-text').style.display = 'none';});
 }
 /** Función que devuelve un elemento del DOM
  * @param {String} id ID del elemento DOM a seleccionar
@@ -654,11 +665,28 @@ function checkForm() {
         NoErr = false;
     }
     if (valor("diasalida") == valor("diallegada") &&
-        valor("minutosalida") == valor("minutollegada")) {
+        valor("minutosalida") == valor("minutollegada") &&
+        valor("horasalida") == valor("horallegada")) {
         msg += "Además: No existe el teletransporte guapi 😉 \n";
         NoErr = false;
     }
     if (!NoErr) window.alert(msg);
     return NoErr;
 }
-
+/** Comprueba que la hora de salida no sea posterior a la de llegada, 
+ *  y si es así, iguala ambas    */
+function updateArrivalTime() {
+    const horasalida = parseInt(getID("horasalida").value);
+    const minutosalida = parseInt(getID("minutosalida").value);
+    const horallegada = parseInt(getID("horallegada").value);
+    const minutollegada = parseInt(getID("minutollegada").value);
+    const diasalida = new Date(getID("diasalida").value);
+    const diallegada = new Date(getID("diallegada").value);
+    diasalida.setHours(horasalida, minutosalida);
+    diallegada.setHours(horallegada, minutollegada);
+    if (diasalida > diallegada) {
+        getID("horallegada").value = horasalida;
+        getID("minutollegada").value = minutosalida;
+        getID("diallegada").value = getID("diasalida").value;
+    }
+}

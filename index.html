@@ -6,113 +6,99 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="secundario.css">
     <link rel="icon" type="image/x-icon" href="./img/icons8-sun-color-32.png" />
     <script type="module" src="./index_def.js"></script>
     <title> HELIOS</title>
 </head>
 
 <body>
-    <div class="wrapper">
+    <div class="container">
         <header>
-            <h1 class="end">☀️&zwnj;HELIOS&zwnj;☀️</h1>
+            <h1>☀️ HELIOS ☀️</h1>
+            <span id="info-text" style="display: none;">
+                <b>HELIOS</b> es una aplicación web que permite al pasajero usuario de un vehículo saber en qué lado del mismo debe sentarse durante el trayecto para evitar el sol o la sombra, según su preferencia. Para ello, el usuario debe introducir la fecha y hora de salida y llegada, así como la localidad y país de origen y destino.
+            </span>
         </header>
         <main>
             <form id="formulario">
-                <div id="presentacion" class="end">
-                    <span> 
-                        <b> HELIOS </b> es una aplicación web que permite al pasajero usuario
-                        de un vehículo saber en qué lado del mismo debe sentarse durante el trayecto para
-                        evitar el sol o la sombra, según su preferencia.
-                    </span>
-                    <span>
-                        Para ello, el usuario debe introducir la fecha y hora de salida
-                        y llegada, así como la localidad y país de origen y destino.
-                    </span>
+                <div class="form-group">
+                    <label for="sun">Preferencia:</label>
+                    <select id="sun">
+                        <option name="sun" value=false>Sombra</option>
+                        <option name="sun" value=true>Sol</option>
+                    </select>
                 </div>
-                <div class="end">
-                    Vamos a averiguar en qué lado debes sentarte en el vehículo,
-                    según quieras que te de el sol o la sombra.
+                <div class="form-group">
+                    <label for="cambio">¿Puedes cambiar de asiento una vez comenzado el viaje?:</label>
+                    <select id="cambio">
+                        <option name="cambio" value=false>No</option>
+                        <option name="cambio" value=true>Sí</option>
+                    </select>
                 </div>
-                <div id="options">
-                    <div id="options">
-                        <label for="sun">Preferencia: </label>
-                        <select id="sun">
-                            <option name="sun" value=false>Sombra</option>
-                            <option name="sun" value=true>Sol</option>
-                        </select>
-                    </div>
-                    <div id="options">
-                        <label for="cambio">¿Puedes cambiar de asiento una vez comenzado el viaje?: </label>
-                        <select id="cambio">
-                            <option name="cambio" value=false>No</option>
-                            <option name="cambio" value=true>Sí</option>
-                        </select>
-                    </div>
-                    <div id="options">
-                        <label for="reloj">¿Quieres los resultados en hora local?: </label>
-                        <label>(Se entiende que en ese caso tu reloj se ajusta automáticamente)</label> <br>
-                        <select id="local">
-                            <option name="reloj" value=false>No</option>
-                            <option name="reloj" value=true>Sí</option>
-                        </select>
+                <div class="form-group">
+                    <label for="local">¿Quieres los resultados en hora local?:</label>
+                    <small class="small">(Se entiende que en ese caso tu reloj se ajusta automáticamente)</small>
+                    <select id="local">
+                        <option name="reloj" value=false>No</option>
+                        <option name="reloj" value=true>Sí</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="diasalida">Fecha de salida</label>
+                    <input id="diasalida" type="date" name="diasalida">
+                </div>
+                <div class="form-group">
+                    <label for="horasalida">Hora de salida</label>
+                    <div class="time-inputs">
+                        <input class="hora" id="horasalida" type="number" min="0" max="23" name="horaSalida" placeholder="23">
+                        <label for="minutosalida">:</label>
+                        <input class="hora" id="minutosalida" type="number" min="0" max="59" name="minutoSalida" placeholder="59">
                     </div>
                 </div>
-                <div class="times">
-                    <div class="time">
-                        <div class="end">
-                            <div>
-                                <label for="diasalida">Fecha de salida</label>
-                                <br>
-                                <input id="diasalida" type="date" name="diasalida">
-                            </div>
-                            <div>
-                                <label>Hora de salida</label>
-                                <br>
-                                <input class="hora" id="horasalida" type="number" name="horaSalida">
-                                <label>: </label>
-                                <input class="hora" id="minutosalida" type="number" name="minutoSalida">
-                            </div>
-                        </div>
-                        <div class="end">
-                            <div>
-                                <label for="diallegada">Fecha de llegada</label>
-                                <br>
-                                <input id="diallegada" type="date" name="diallegada">
-                            </div>
-                            <div>
-                                <label>Hora de llegada</label>
-                                <br>
-                                <input class="hora" id="horallegada" type="number" name="horaLlegada">
-                                <label>: </label>
-                                <input class="hora" id="minutollegada" type="number" name="minutoLlegada">
-                            </div>
-                        </div>
+                <div class="form-group">
+                    <label for="diallegada">Fecha de llegada</label>
+                    <input id="diallegada" type="date" name="diallegada">
+                </div>
+                <div class="form-group">
+                    <label for="horallegada">Hora de llegada</label>
+                    <div class="time-inputs">
+                        <input class="hora" id="horallegada" type="number" min="0" max="23" name="horaLlegada" placeholder="23">
+                        <label for="minutollegada">:</label>
+                        <input class="hora" id="minutollegada" type="number" min="0" max="59" name="minutoLlegada" placeholder="59">
                     </div>
                 </div>
-                <div>
-                    <div id="spaces">
-                        <label for="origen">¿De qué localidad sales?</label>
-                        <input id="origen" type="text" name="origen">
-                        <label for="paisOrigen">¿De qué pais sales?</label>
-                        <select id="paisOrigen"></select>
-                        <label for="destino">¿A qué localidad vas? </label>
-                        <input id="destino" type="text" name="destino">
-                        <label for="paisDestino">¿A qué pais vas? </label>
-                        <select id="paisDestino"></select>
-                    </div>
+                <div class="form-group">
+                    <label for="origen">¿De qué localidad sales?</label>
+                    <input id="origen" type="text" name="origen" placeholder="p.ej: Coria del Río">
                 </div>
-                <div class="preferencia">
-                    <button id="submit" type="submit">Enviar </button>
-                    <button id="reset">Borrar </button>
+                <div class="form-group">
+                    <label for="paisOrigen">¿De qué país sales?</label>
+                    <select id="paisOrigen"></select>
+                </div>
+                <div class="form-group">
+                    <label for="destino">¿A qué localidad vas?</label>
+                    <input id="destino" type="text" name="destino" placeholder="p.ej: Tokio">
+                </div>
+                <div class="form-group">
+                    <label for="paisDestino">¿A qué país vas?</label>
+                    <select id="paisDestino"></select>
+                </div>
+                <div class="form-group button-group">
+                    <button id="submit" type="submit">Enviar</button>
+                    <button id="reset" type="button">Borrar</button>
                 </div>
             </form>
             <div id="render"></div>
         </main>
-        <footer class="end">
-            <span>Web de Julio Cabanillas</span>
-            <!-- <a href="https://github.com/V3RNE42">Github de Julio</a> -->
+        <footer>
+            <a href="https://www.linkedin.com/in/juliocabanillas42/">
+                Web de Julio Cabanillas
+            </a>
         </footer>
     </div>
+    <div class="color-toggle-container">
+        <button id="color-toggle" class="color-toggle">🌒</button>
+    </div>
 </body>
-
 </html>

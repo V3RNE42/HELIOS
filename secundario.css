@@ -1,0 +1,112 @@
+header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    background-color: #333;
+    padding: 1rem;
+    text-align: center;
+    color: #fff;
+    margin-bottom: 4%;
+    z-index: 1001;
+}
+
+span {
+    font-size: 1.2rem;
+    font-weight: 500;
+    margin-top: 2%;
+}
+
+small {
+    font-size: 0.65rem;
+}
+
+.color-toggle-container {
+    position: fixed;
+    top: 25%;
+    right: 1rem;
+    z-index: 1000;
+}
+
+.color-toggle {
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+}
+
+@keyframes rotation {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+.rotate {
+    animation: rotation 42s infinite linear;
+}
+
+.color-toggle:focus {
+    outline: none;
+}
+
+.container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding-top: 5rem;
+}
+
+.invert-colors {
+    background-color: #000;
+    color: #fff;
+}
+
+.invert-text-colors {
+    color: #fff;
+}
+
+.invert-colors .invert-text-colors {
+    color: #000;
+    color: #fff;
+}
+
+.invert-colors input,
+.invert-colors select,
+.invert-colors button {
+    background-color: black;
+    color: #fff;
+}
+
+.invert-colors .time-inputs label {
+    color: #fff;
+}
+
+.invert-colors button:hover {
+    background-color: #fff;
+    color: #000;
+}
+
+button:hover {
+    background-color: black;
+    color: lightgoldenrodyellow;
+}
+
+footer {
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background-color: #333;
+    padding: 1rem;
+    text-align: center;
+    color: #fff;
+    margin-top: 1rem;
+    z-index: 999;
+}
+
+#render {
+    margin-top: 5.25%;
+    padding: 2rem;
+    display: none;
+}
