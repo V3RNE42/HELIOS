@@ -1,6 +1,5 @@
 ## *SPANISH*    
 # HELIOS
-(Mi Trabajo de Fin de Ciclo para mi FP de Desarrollo de Aplicaciones en el curso 2022-23. )
 
 **HELIOS** es una app online útil para elegir asientos en un trayecto: en el lado izquierdo del vehículo, o en el derecho. 
 Ya está. 
@@ -12,7 +11,7 @@ Para esto tiene en cuenta una serie de parámetros espacio-temporales que maneja
 **DELIMITACIONES**:   
 1 - Se asume un **trayecto rectilíneo** desde el punto de origen y el de destino. Esto quiere decir que, en ausencia de más información, el viaje será interpretado como una línea recta entre las coordenadas de origen y las de destino.    
 2 - Se asume una **velocidad constante**: aceleración, decelaración, y parada son conceptos ajenos al vehículo idealizado con el que trabaja el modelo de la app.   
-3 - Se asume que no hay alteraciones de altitud sobre el nivel del mar, ni túneles, tiempo nublado,o sombra proyectada por edificaciones y/o accidentes geográficos de ningún tipo.   
+3 - Se asume que no hay alteraciones de altitud sobre el nivel del mar, ni túneles, tiempo nublado, o sombra proyectada por edificaciones, accidentes geográficos o eclipses.   
 4 - Se asume que trabajamos desde el **uso horario del punto de salida**, que será el reloj de referencia del viajero. Los cambios horarios derivados del movimiento entre husos horarios se verán reflejados en los resultados finales.    
 
 **ALGORITMO FUNDAMENTAL:**  
