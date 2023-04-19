@@ -83,12 +83,14 @@ small {
     color: #fff;
 }
 
-.invert-colors button:hover {
+.invert-colors button#reset:hover, 
+.invert-colors button#submit:hover {
     background-color: #fff;
     color: #000;
 }
 
-button:hover {
+button#reset:hover, 
+button#submit:hover {
     background-color: black;
     color: lightgoldenrodyellow;
 }

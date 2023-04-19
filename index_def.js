@@ -267,6 +267,9 @@ function renderResults() {
     render.style.display = 'inherit';
     reloadId(ID);
     onClick(resetea, () => { window.location.reload(); });
+    let camera = getID('camera');
+    camera.style.display = 'flex';
+    onClick(camera, () => { printAsPDF(); });
 };
 
 
@@ -470,6 +473,7 @@ async function updateSingleSections() {
         };
     };
     subSection.push({ date: diallegada, rate: 1 , timeZone: local ? await getOffset(coordPoint) : null });
+    console.log('datos: \n', datos)
     console.log("se han necesitado " + iteraciones + " iteraciones para una "
         + "precisión de +/- " + MAX_DIFF + " milisegundos en los cálculos");
     console.log(subSection);
@@ -622,10 +626,9 @@ function reloadId(IDES) {
     //ajuste de horas en caso de error
     [...horas, "diasalida", "diallegada"].forEach((inputId) => {
         getID(inputId).addEventListener("change", updateArrivalTime());});
-    document.querySelector('header').addEventListener('mouseenter', () => {
-        getID('info-text').style.display = 'inline';});
-    document.querySelector('header').addEventListener('mouseleave', () => {
-        getID('info-text').style.display = 'none';});
+    let header = document.querySelector('header');
+    header.addEventListener('mouseenter', () => {getID('info-text').style.display = 'inline';});
+    header.addEventListener('mouseleave', () => {getID('info-text').style.display = 'none';});
 }
 /** Función que devuelve un elemento del DOM
  * @param {String} id ID del elemento DOM a seleccionar
@@ -649,7 +652,8 @@ function checkForm() {
             NoErr = false;
         }
     });
-    if (valor("origen") == valor("destino")) {
+    if (valor("origen") == valor("destino") &&
+        valor("paisOrigen") == valor("paisDestino")) {
         msg += "El origen y el destino no pueden ser iguales \n";
         NoErr = false;
     }
@@ -696,4 +700,32 @@ function updateArrivalTime() {
         getID("minutollegada").value = minutosalida;
         getID("diallegada").value = getID("diasalida").value;
     }
+}
+/** Imprime la página como PDF para facilitarle la vida al usuario final */
+async function printAsPDF() {
+    let header = getID('header');
+    header.style.position = 'absolute';
+    const { jsPDF } = window.jspdf;
+    const pdf = new jsPDF('p', 'pt', 'a4'); 
+    const pageHeight = pdf.internal.pageSize.getHeight();
+    const content = document.body;
+    const canvas = await html2canvas(content);
+    const imgData = canvas.toDataURL('image/png');
+    let imgHeight = (canvas.height * pdf.internal.pageSize.getWidth()) / canvas.width;
+    let heightLeft = imgHeight;
+    let position = 0;
+    pdf.addImage(imgData, 'PNG', 0, position, pdf.internal.pageSize.getWidth(), imgHeight);
+    heightLeft -= pageHeight;
+    while (heightLeft >= 0) {
+        position = heightLeft - imgHeight;
+        pdf.addPage();
+        pdf.addImage(imgData, 'PNG', 0, position, pdf.internal.pageSize.getWidth(), imgHeight);
+        heightLeft -= pageHeight;
+    }
+    let fecha = new Date().getHours();
+    fecha = JSON.stringify(fecha).substring(0, 10).replaceAll(/ /g, '_');
+    let filename = `HELIOS-asientos__${fecha}_origen#${datos['origen']}_${datos['paisOrigen']}_destino#${datos['destino']}_${datos['paisDestino']}`;
+    filename += '.pdf';
+    pdf.save(filename);
+    header.style.position = 'fixed';
 }

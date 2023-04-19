@@ -9,12 +9,14 @@
     <link rel="stylesheet" href="secundario.css">
     <link rel="icon" type="image/x-icon" href="./img/icons8-sun-color-32.png" />
     <script type="module" src="./index_def.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.3.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.3.3/html2canvas.min.js"></script>
     <title> HELIOS</title>
 </head>
 
 <body>
     <div class="container">
-        <header>
+        <header id="header">
             <h1>☀️ HELIOS ☀️</h1>
             <span id="info-text" style="display: none;">
                 <b>HELIOS</b> es una aplicación web que permite al pasajero usuario de un vehículo saber en qué lado del mismo debe sentarse durante el trayecto para evitar el sol o la sombra, según su preferencia. Para ello, el usuario debe introducir la fecha y hora de salida y llegada, así como la localidad y país de origen y destino.
@@ -98,7 +100,8 @@
         </footer>
     </div>
     <div class="color-toggle-container">
-        <button id="color-toggle" class="color-toggle">🌙</button>
+        <button id="color-toggle" class="color-toggle"                      >🌙</button>
+        <button id="camera"       class="color-toggle" style="display:none;">📷</button>
     </div>
 </body>
 </html>
