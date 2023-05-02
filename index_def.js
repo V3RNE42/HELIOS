@@ -37,9 +37,9 @@ let datos = [{}];
 window.addEventListener('DOMContentLoaded', () => {
     reloadId(ID);
     countries.forEach((el) => {
-            paisOrigen.innerHTML += `<option value="${el}" ${el == 'Spain' ? 'selected' : ''}>${el}</option>`;
-            paisDestino.innerHTML += `<option value="${el}" ${el == 'Spain' ? 'selected' : ''}>${el}</option>`;
-        });
+        paisOrigen.innerHTML += `<option value="${el}" ${el == 'Spain' ? 'selected' : ''}>${el}</option>`;
+        paisDestino.innerHTML += `<option value="${el}" ${el == 'Spain' ? 'selected' : ''}>${el}</option>`;
+    });
     onClick(submit, async () => {
         if (checkForm()) {
             formulario.style.display = "none";
@@ -62,7 +62,7 @@ window.addEventListener('DOMContentLoaded', () => {
 /** Esta función comprueba que la opción LOCAL sólo puedda 
     ser marcada si el origen y el destino tienen diferencia horaria */
 async function checkLocal() {
-    if (datos['local']===true) {
+    if (datos['local'] === true) {
         let startOffset, endOffset;
         startOffset = await getOffset(datos['start']);
         endOffset = await getOffset(datos['end']);
@@ -99,20 +99,20 @@ async function updateSubsections() {
     //adquirimos el mediodia solar en origen 
     let times = getTimes(salida, latitudDestino, longitudDestino);
     datos.start = {
-      lat: coordenadas.latOrig,
-      lon: coordenadas.lonOrig,
-      sunset: tiempo1.sunset.end,
-      sunrise: tiempo1.sunrise.start,
-      solarnoon: times.solarNoon,
+        lat: coordenadas.latOrig,
+        lon: coordenadas.lonOrig,
+        sunset: tiempo1.sunset.end,
+        sunrise: tiempo1.sunrise.start,
+        solarnoon: times.solarNoon,
     };
     //...y en destino
     times = getTimes(llegada, latitudOrigen, longitudDestino);
     datos.end = {
-      lat: coordenadas.latDest,
-      lon: coordenadas.lonDest,
-      sunset: tiempo2.sunset.end,
-      sunrise: tiempo2.sunrise.start,
-      solarnoon: times.solarNoon,
+        lat: coordenadas.latDest,
+        lon: coordenadas.lonDest,
+        sunset: tiempo2.sunset.end,
+        sunrise: tiempo2.sunrise.start,
+        solarnoon: times.solarNoon,
     };
     try {
         await checkLocal();
@@ -135,7 +135,7 @@ async function getOffset(coords) {
     try {
         let response = await fetch(`${endpoint}?apiKey=${APIkey}&lat=${lat}&long=${lon}`);
         let data = await response.json();
-        if (data!=undefined || data!=null) {
+        if (data != undefined || data != null) {
             huso = data.timezone_offset.valueOf();
             return huso;
         } else throw new Error('No se pudo hacer fetch');
@@ -162,9 +162,9 @@ function renderResults() {
     let leftSeat;
     formulario.style.display = "none";
     let someInfo = document.createElement('div');
-    let destino = datos["destino"], origen = datos["origen"], 
+    let destino = datos["destino"], origen = datos["origen"],
         paisOrigen = datos["paisOrigen"], paisDestino = datos["paisDestino"];
-    [destino, origen, paisOrigen, paisDestino].forEach((e) => {e = e.replaceAll("%20"," ")});
+    [destino, origen, paisOrigen, paisDestino].forEach((e) => { e = e.replaceAll("%20", " ") });
 
     someInfo.innerHTML =
         `<b>Salida:</b>  ${datos["diasalida"]} <br>
@@ -197,14 +197,14 @@ function renderResults() {
         };
 
         hours2 = (null != el.sunset) ? el.sunset.getHours() : el.noon?.getHours(),
-        minutes2 = (null != el.sunset) ? el.sunset.getMinutes() : el.noon?.getMinutes(),
-        noonHour = el.noon?.getHours(),
-        noonMin = el.noon?.getMinutes(),
-        hours1 = (null != el.sunrise) ? el.sunrise.getHours() : el.noon?.getHours(),
-        minutes1 = (null != el.sunrise) ? el.sunrise.getMinutes() : el.noon?.getMinutes(),
-        day = el.sunrise?.getDate().toString(),
-        month = el.sunrise?.getMonth(),
-        year = el.sunrise?.getFullYear();
+            minutes2 = (null != el.sunset) ? el.sunset.getMinutes() : el.noon?.getMinutes(),
+            noonHour = el.noon?.getHours(),
+            noonMin = el.noon?.getMinutes(),
+            hours1 = (null != el.sunrise) ? el.sunrise.getHours() : el.noon?.getHours(),
+            minutes1 = (null != el.sunrise) ? el.sunrise.getMinutes() : el.noon?.getMinutes(),
+            day = el.sunrise?.getDate().toString(),
+            month = el.sunrise?.getMonth(),
+            year = el.sunrise?.getFullYear();
 
         let adapt = (num) => num >= 9 ? num.toString() : "0" + num.toString();
 
@@ -415,7 +415,7 @@ async function updateSingleSections() {
     let total_time = diallegada.getTime() - diasalida.getTime();
     let limit = (Math.floor(total_time * 2 / ONE_DAY) >= 1) ? Math.floor(total_time * 2 / ONE_DAY) : 2;
     /** Máxima cantidad de iteraciones en el bucle */
-    let MAX_LOOPS = limit**2;
+    let MAX_LOOPS = limit ** 2;
     let increase = MAX_DIFF / total_time;
     let loops = 0, cont = 0;
     let { lat, lon } = start, coordPoint = { lat, lon };
@@ -433,21 +433,21 @@ async function updateSingleSections() {
             return new Date(tiempo.getTime());
         };
     let nextDay = Math.floor(diasalida.getTime() / ONE_DAY) == Math.floor(diallegada.getTime() / ONE_DAY) - 1;
-    datos.night = (nextDay && 
-        getDayInfo(diasalida,  start.lat, start.lon).sunset.start.getTime() <= diasalida.getTime() && 
-        getDayInfo(diallegada, start.lat, start.lon).sunrise.end.getTime()  >= diallegada.getTime());
+    datos.night = (nextDay &&
+        getDayInfo(diasalida, start.lat, start.lon).sunset.start.getTime() <= diasalida.getTime() &&
+        getDayInfo(diallegada, start.lat, start.lon).sunrise.end.getTime() >= diallegada.getTime());
     while (!datos.night && cont <= limit + 1 && datePointer.getTime() < diallegada.getTime() && loops < MAX_LOOPS) {
         loops++;
-        if (!seekSunset && cont >= 0 ) {
+        if (!seekSunset && cont >= 0) {
             datePointer = new Date(datePointer.getTime() + ONE_DAY);
         };
-        while (!(time.getTime()>subSection[subSection.length-1].date.getTime()) || !(diff<=MAX_DIFF)) {
+        while (!(time.getTime() > subSection[subSection.length - 1].date.getTime()) || !(diff <= MAX_DIFF)) {
             iteraciones++;
             time = updateTime();
 
             RATE = getRateOfDate(time.getTime());
             coordPoint = newCoords();
-            if ((seekSunset && isThereDaylightNow(coordPoint, datePointer)) || 
+            if ((seekSunset && isThereDaylightNow(coordPoint, datePointer)) ||
                 (!seekSunset && !isThereDaylightNow(coordPoint, datePointer))) {
                 RATE += increase
             } else {
@@ -456,7 +456,7 @@ async function updateSingleSections() {
             coordPoint = newCoords();
             datePointer = getNewDatePointer();
             datePointer = updateTime();
-            
+
             diff = getAbsoluteDiff(time.getTime(), datePointer.getTime());
         };
         if (RATE < 1 && RATE > subSection[subSection.length - 1].rate) {
@@ -472,7 +472,7 @@ async function updateSingleSections() {
             seekSunset = !seekSunset;
         };
     };
-    subSection.push({ date: diallegada, rate: 1 , timeZone: local ? await getOffset(coordPoint) : null });
+    subSection.push({ date: diallegada, rate: 1, timeZone: local ? await getOffset(coordPoint) : null });
     console.log('datos: \n', datos)
     console.log("se han necesitado " + iteraciones + " iteraciones para una "
         + "precisión de +/- " + MAX_DIFF + " milisegundos en los cálculos");
@@ -543,8 +543,8 @@ async function getCoords(city, country) {
     try {
         const response = await fetch(`https://nominatim.openstreetmap.org/search.php?city=${city}&country=${country}&format=jsonv2`);
         let data = await response.json();
-        if (data.length > 0) { 
-            data = data[0]; 
+        if (data.length > 0) {
+            data = data[0];
             return { lon: parseFloat(data.lon), lat: parseFloat(data.lat) };
         } else throw new Error('No se pudo obtener datos de nominatim');
     } catch (error) {
@@ -553,9 +553,9 @@ async function getCoords(city, country) {
             const apiKey = 'b40897201f924666a9e86f365d5efb13';
             const backupResponse = await fetch(`https://api.opencagedata.com/geocode/v1/json?q=${city},${country}&key=${apiKey}`);
             let backupData = await backupResponse.json();
-            if (backupData.results.length > 0) { 
+            if (backupData.results.length > 0) {
                 console.log(backupData);
-                backupData = backupData.results[0]; 
+                backupData = backupData.results[0];
                 return { lon: parseFloat(backupData.geometry.lng), lat: parseFloat(backupData.geometry.lat) };
             } else throw new Error('No se pudo obtener datos de OpenCage Data API');
         } catch (backupError) {
@@ -617,7 +617,7 @@ function reloadId(IDES) {
     //UIX: ajuste de paleta de colores
     let colorToggle = getID('color-toggle');
     colorToggle.classList.add('rotate');
-    onClick(colorToggle,() => {
+    onClick(colorToggle, () => {
         colorToggle.textContent = colorToggle.textContent === '🌙' ? '☀️' : '🌙';
         document.body.classList.toggle('invert-colors');
         const allTextElements = document.querySelectorAll('h1, a, label, small, button, input, select');
@@ -625,10 +625,11 @@ function reloadId(IDES) {
     });
     //ajuste de horas en caso de error
     [...horas, "diasalida", "diallegada"].forEach((inputId) => {
-        getID(inputId).addEventListener("change", updateArrivalTime());});
+        getID(inputId).addEventListener("change", updateArrivalTime());
+    });
     let header = document.querySelector('header');
-    header.addEventListener('mouseenter', () => {getID('info-text').style.display = 'inline';});
-    header.addEventListener('mouseleave', () => {getID('info-text').style.display = 'none';});
+    header.addEventListener('mouseenter', () => { getID('info-text').style.display = 'inline'; });
+    header.addEventListener('mouseleave', () => { getID('info-text').style.display = 'none'; });
 }
 /** Función que devuelve un elemento del DOM
  * @param {String} id ID del elemento DOM a seleccionar
@@ -640,7 +641,7 @@ function getID(id) {
  * @param {String} id ID del elemento DOM a seleccionar
  * @returns {*} Valor del elemento */
 let getVal = (id) => typeof id == "string" ? getID(id)?.value : id?.value;
-    
+
 /** Comprueba que todos los campos del formulario están correctamente
  *  rellenos, y si no lo están, muestra un mensaje de error 
  *  @returns {Boolean} True si NO hay ningún error en el formulario*/
@@ -703,29 +704,25 @@ function updateArrivalTime() {
 }
 /** Imprime la página como PDF para facilitarle la vida al usuario final */
 async function printAsPDF() {
-    let header = getID('header');
-    header.style.position = 'absolute';
-    const { jsPDF } = window.jspdf;
-    const pdf = new jsPDF('p', 'pt', 'a4'); 
-    const pageHeight = pdf.internal.pageSize.getHeight();
-    const content = document.body;
-    const canvas = await html2canvas(content);
-    const imgData = canvas.toDataURL('image/png');
-    let imgHeight = (canvas.height * pdf.internal.pageSize.getWidth()) / canvas.width;
-    let heightLeft = imgHeight;
-    let position = 0;
-    pdf.addImage(imgData, 'PNG', 0, position, pdf.internal.pageSize.getWidth(), imgHeight);
-    heightLeft -= pageHeight;
-    while (heightLeft >= 0) {
-        position = heightLeft - imgHeight;
-        pdf.addPage();
-        pdf.addImage(imgData, 'PNG', 0, position, pdf.internal.pageSize.getWidth(), imgHeight);
-        heightLeft -= pageHeight;
-    }
     let fecha = new Date().getHours();
     fecha = JSON.stringify(fecha).substring(0, 10).replaceAll(/ /g, '_');
     let filename = `HELIOS-asientos__${fecha}_origen#${datos['origen']}_${datos['paisOrigen']}_destino#${datos['destino']}_${datos['paisDestino']}`;
     filename += '.pdf';
-    pdf.save(filename);
+    let header = getID('header');
+    header.style.position = 'absolute';
+    printJS({
+        printable: 'container',
+        type: 'html',
+        css: [
+            "./styles.css",
+            "./secundario.css"
+        ],
+        scanStyles: false,
+        header: null, 
+        targetStyles: ['*'], 
+        onLoadingEnd: null, 
+        orientation: 'portrait',
+        fileName: filename,
+    });
     header.style.position = 'fixed';
 }
