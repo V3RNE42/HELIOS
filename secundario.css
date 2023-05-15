@@ -95,7 +95,7 @@ button#submit:hover {
     color: lightgoldenrodyellow;
 }
 
-footer {
+footer, footer > a {
     bottom: 0;
     left: 0;
     right: 0;
