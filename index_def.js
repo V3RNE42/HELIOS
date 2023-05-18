@@ -97,7 +97,7 @@ async function updateSubsections() {
     let tiempo1 = getDayInfo(salida, latitudOrigen, longitudOrigen);
     let tiempo2 = getDayInfo(llegada, latitudDestino, longitudDestino);
     //adquirimos el mediodia solar en origen 
-    let times = getTimes(salida, latitudDestino, longitudDestino);
+    let times = getTimes(salida, latitudOrigen, longitudOrigen);
     datos.start = {
         lat: coordenadas.latOrig,
         lon: coordenadas.lonOrig,
@@ -106,7 +106,7 @@ async function updateSubsections() {
         solarnoon: times.solarNoon,
     };
     //...y en destino
-    times = getTimes(llegada, latitudOrigen, longitudDestino);
+    times = getTimes(llegada, latitudDestino, longitudDestino);
     datos.end = {
         lat: coordenadas.latDest,
         lon: coordenadas.lonDest,
