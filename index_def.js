@@ -46,11 +46,7 @@ window.addEventListener('DOMContentLoaded', () => {
             Solete.spin(document.querySelector('body'));
             datos.push({ ...form.forEach((el) => datos[el] = valor(el)) });
             await updateSubsections();
-            if (datos.length > 0) {
-                renderResults();
-            } else {
-                window.alert("No hay datos!");
-            };
+            renderResults();
             Solete.stop();
         };
     });
