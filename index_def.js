@@ -1,7 +1,7 @@
 import { SunCalc } from "./suncalc.js"
 import sunCalc from "./SunCalc_function.js";
 //importo algunas funciones trigonometricas y matematicas que he creado aparte
-import { getNewCoords, getAbsoluteDiff } from "./trigo.js";
+import { getNewCoords, getAbsoluteDiff, getAngularDistance } from "./trigo.js";
 import { Spinner } from "./spinner.js";
 import countries from "./countries.js";
 //con la funcion getTimes sacamos el MediodiaSolar
@@ -41,7 +41,7 @@ window.addEventListener('DOMContentLoaded', () => {
         paisDestino.innerHTML += `<option value="${el}" ${el == 'Spain' ? 'selected' : ''}>${el}</option>`;
     });
     onClick(submit, async () => {
-        if (checkForm()) {
+        if (await checkForm()) {
             formulario.style.display = "none";
             Solete.spin(document.querySelector('body'));
             datos.push({ ...form.forEach((el) => datos[el] = valor(el)) });
@@ -561,7 +561,7 @@ async function getCoords(city, country) {
 };
 /** Retorna el valor "cocinado" de un elemento del DOM, listo para ser usado
  * @param {String} id 
- * @returns {Boolean, Number, String, null} */
+ * @returns {*} */
 function valor(id) {
     let valor = null;
     switch (id) {
@@ -641,7 +641,7 @@ let getVal = (id) => typeof id == "string" ? getID(id)?.value : id?.value;
 /** Comprueba que todos los campos del formulario están correctamente
  *  rellenos, y si no lo están, muestra un mensaje de error 
  *  @returns {Boolean} True si NO hay ningún error en el formulario*/
-function checkForm() {
+async function checkForm() {
     let NoErr = true, msg = "";
     form.forEach((el) => {
         if ((getVal(el) == "" || getVal(el) == null) && !specialData.includes(el)) {
@@ -659,26 +659,34 @@ function checkForm() {
         msg += "El campo de minutos no es correcto \n";
         NoErr = false;
     }
-    if (getVal("horallegada") > 23 || getVal("horallegada") < 0
-        || getVal("horasalida") > 23 || getVal("horasalida") < 0) {
+    if (getVal("horallegada") > 23 || getVal("horasalida") > 23 || getVal("horasalida") < 0 || getVal("horallegada") < 0 ) {
         msg += "El campo de horas no es correcto \n";
         NoErr = false;
     }
-    if ((getVal("diasalida") > getVal("diallegada"))) {
-        msg += "La fecha de llegada no puede ser anterior a la de salida \n";
+    if (valor("diasalida") >= valor("diallegada")) {
+        msg += "La fecha de llegada no puede ser anterior o igual a la de salida \n";
         NoErr = false;
     }
     if (valor("diasalida") < Date.now() / 1000 / 60 / 60 / 24) {
         msg += "La fecha de salida no puede ser anterior al día de hoy \n";
         NoErr = false;
     }
-    if (valor("diasalida") == valor("diallegada") &&
-        valor("minutosalida") == valor("minutollegada") &&
-        valor("horasalida") == valor("horallegada")) {
-        msg += "Además: No existe el teletransporte guapi 😉 \n";
-        NoErr = false;
-    }
-    if (!NoErr) window.alert(msg);
+    // if (NoErr) {
+    //     let coordOrigen = await getCoords(valor("origen"),valor("paisOrigen"));
+    //     let coordDestino = await getCoords(valor("destino"),valor("paisDestino"));
+    //     let diaLlegada = valor("diallegada");
+    //     let diaSalida = valor("diasalida");
+    //     let speed = getAngularDistance(coordOrigen, coordDestino) / ((diaLlegada - diaSalida) / (1000 * 60 * 60));
+    //     if (speed > 830) {
+    //         if (window.confirm(
+    //             "La velocidad del vehículo es muy alta. ¿Es esto un error? \n" +
+    //             "Si es así, pulsa 'Cancelar' y corrige los datos. \n" +
+    //             "Si no, pulsa 'Aceptar' para continuar. \n")) {
+    //                 NoErr = false;
+    //         }
+    //     }
+    // }
+    if (!NoErr) {window.alert(msg);}
     return NoErr;
 }
 /** Comprueba que la hora de salida no sea posterior a la de llegada, 

@@ -23,6 +23,11 @@ function getNewCoords(startCoords, endCoords, fraction) {
     return newCoords;
   }
   
+  /**
+   * Obtiene la distancia en kilómetros entre coordenadas
+   * @param {*} startCoords 
+   * @param {*} endCoords 
+   * @returns {Number} distancia */
   function getAngularDistance(startCoords, endCoords) {
     const earthRadius = 6371; // Radio terrestre => 6,371 km
     const lat1 = toRadians(startCoords.lat);
@@ -72,4 +77,4 @@ function getNewCoords(startCoords, endCoords, fraction) {
     return radians * 180 / Math.PI;
   }
   
-export { getNewCoords, getAbsoluteDiff};
+export { getNewCoords, getAbsoluteDiff, getAngularDistance};
