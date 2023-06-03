@@ -671,21 +671,21 @@ async function checkForm() {
         msg += "La fecha de salida no puede ser anterior al día de hoy \n";
         NoErr = false;
     }
-    if (NoErr) {
-        let coordOrigen = await getCoords(valor("origen"),valor("paisOrigen"));
-        let coordDestino = await getCoords(valor("destino"),valor("paisDestino"));
-        let diaLlegada = valor("diallegada");
-        let diaSalida = valor("diasalida");
-        let speed = getAngularDistance(coordOrigen, coordDestino) / ((diaLlegada - diaSalida) / (1000 * 60 * 60));
-        if (speed > 830) { //830km/h = veloc. crucero Boeing 737
-            if (!(window.confirm(
-                "La velocidad del vehículo es muy alta. ¿Es esto un error? \n" +
-                "Si es así, pulsa 'Cancelar' y corrige los datos. \n" +
-                "Si no, pulsa 'Aceptar' para continuar. \n"))) {
-                    NoErr = false;
-            }
-        }
-    }
+    // if (NoErr) {
+    //     let coordOrigen = await getCoords(valor("origen"),valor("paisOrigen"));
+    //     let coordDestino = await getCoords(valor("destino"),valor("paisDestino"));
+    //     let diaLlegada = valor("diallegada");
+    //     let diaSalida = valor("diasalida");
+    //     let speed = getAngularDistance(coordOrigen, coordDestino) / ((diaLlegada - diaSalida) / (1000 * 60 * 60));
+    //     if (speed > 830) { //830km/h = veloc. crucero Boeing 737
+    //         if (!(window.confirm(
+    //             "La velocidad del vehículo es muy alta. ¿Es esto un error? \n" +
+    //             "Si es así, pulsa 'Cancelar' y corrige los datos. \n" +
+    //             "Si no, pulsa 'Aceptar' para continuar. \n"))) {
+    //                 NoErr = false;
+    //         }
+    //     }
+    // }
     if (!NoErr) {window.alert(msg);}
     return NoErr;
 }
