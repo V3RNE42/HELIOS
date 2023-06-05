@@ -17,8 +17,8 @@ Para esto tiene en cuenta una serie de parámetros que maneja dentro de unas **d
 |-----------|---------|------------------------|-------------|
 |    SOL    |  SOMBRA | Antes Mediodía Solar   | Norte a Sur |
 |   SOMBRA  |   SOL   | Antes Mediodía Solar   | Sur a Norte |
-|    SOL    |  SOMBRA | Tras el Mediodía Solar | Norte a Sur |
-|   SOMBRA  |   SOL   | Tras el Mediodía Solar | Sur a Norte |
+|   SOMBRA  |   SOL   | Tras el Mediodía Solar | Norte a Sur |
+|    SOL    |  SOMBRA | Tras el Mediodía Solar | Sur a Norte |
 
 **CRÉDITOS ADICIONALES:**   
 + Es necesario acreditar a Volodymyr Agafonkin, creador del módulo SunCalc de JS, útil para averiguar el itinerario solar para unas coordenadas espaciotemporales dadas. Sin su trabajo, nada de esto sería posible.
